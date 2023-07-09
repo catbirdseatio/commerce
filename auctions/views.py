@@ -1,42 +1,45 @@
 from django.contrib.auth import authenticate, login, logout
-from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
 from django.views.generic.edit import CreateView
+from django.views import View
 
-from .models import User
-from .forms import CustomUserCreationForm
+from .forms import CustomUserCreationForm, LoginForm
 
 
 def index(request):
     return render(request, "auctions/index.html")
 
 
-def login_view(request):
-    if request.method == "POST":
-        # Attempt to sign user in
-        username = request.POST["username"]
-        password = request.POST["password"]
-        user = authenticate(request, username=username, password=password)
+class LoginView(View):
+    def get(self, request):
+        form = LoginForm()
+        return render(request, "auctions/login.html", {"form": form})
 
-        # Check if authentication successful
-        if user is not None:
-            login(request, user)
-            return HttpResponseRedirect(reverse("index"))
-        else:
-            return render(
-                request,
-                "auctions/login.html",
-                {"message": "Invalid username and/or password."},
-            )
-    else:
-        return render(request, "auctions/login.html")
+    def post(self, request):
+        form = LoginForm(request.POST)
+        
+        if form.is_valid():
+            user = authenticate(request, **form.cleaned_data)
+            
+            if user is not None:
+                login(request, user)
+                return HttpResponseRedirect(reverse("index"))
+            
+            else:
+                form = LoginForm()
+                return render(
+                    request,
+                    "auctions/login.html",
+                    {"message": "Invalid username and/or password.",
+                    "form": form}
+                )     
 
-
-def logout_view(request):
-    logout(request)
-    return HttpResponseRedirect(reverse("index"))
+class LogoutView(View):
+    def get(self, request):
+        logout(request)
+        return HttpResponseRedirect(reverse("index"))
 
 
 # def register(request):

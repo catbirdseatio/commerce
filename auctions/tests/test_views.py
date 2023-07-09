@@ -31,3 +31,22 @@ class TestRegisterView:
         response = client.post(self.url, data, follow_redirects=True)
         assert response.status_code == 200
         assert b"A user with that username already exists." in response.content
+        
+    
+class TestLoginView:
+    url = reverse("login")
+    
+    def test_successful_login(self, test_user, client):
+        data = {"username": "rodney", "password": "Testpass123"}
+        response = client.post(self.url, data, follow_redirects=False)
+        assert response.status_code == 200
+    
+    def test_unsuccessful_login_200(self, test_user, client):
+        data = {"username": "rodney", "password": "Password"}
+        response = client.post(self.url, data)
+        assert response.status_code == 200
+    
+    def test_unsuccessful_login_error_message(self, test_user, client):
+        data = {"username": "rodney", "password": "Password"}
+        response = client.post(self.url, data)
+        assert  b"Invalid username and/or password." in response.content
