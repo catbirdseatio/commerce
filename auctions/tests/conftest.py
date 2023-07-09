@@ -18,7 +18,13 @@ def test_django_file():
 
 @pytest.fixture
 def test_user():
-    return UserFactory()
+    return UserFactory(
+        email="rodney@example.com",
+        username="rodney_boring",
+        is_superuser=False,
+        is_staff=False,
+        password="Testpass123",
+    )
 
 
 @pytest.fixture

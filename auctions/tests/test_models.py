@@ -14,8 +14,11 @@ class TestImage:
 
 class TestUser:
     def test_user_creation(self, test_user):
-        print(f"FIRST_NAME:{test_user.first_name} LAST_NAME: {test_user.last_name} EMAIL: {test_user.email}")
         assert User.objects.count() == 1
+        
+    def test_user__str__(self, test_user):
+        username = test_user.username
+        assert str(test_user) == username
 
     def test_assert_superuser(self, test_superuser):
         print(f"FIRST_NAME:{test_superuser.first_name} LAST_NAME: {test_superuser.last_name} EMAIL: {test_superuser.email}")
