@@ -8,8 +8,9 @@ from django.views import View
 from .forms import CustomUserCreationForm, LoginForm
 
 
-def index(request):
-    return render(request, "auctions/index.html")
+class IndexView(View):
+    def get(self, request):
+        return render(request, "auctions/index.html")
 
 
 class LoginView(View):

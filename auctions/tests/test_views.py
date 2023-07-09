@@ -50,3 +50,21 @@ class TestLoginView:
         data = {"username": "rodney", "password": "Password"}
         response = client.post(self.url, data)
         assert  b"Invalid username and/or password." in response.content
+        
+
+class TestIndexView:
+    url = reverse("index")
+    
+    def test_can_get(self, client):
+        response = client.get(self.url)
+        assert response.status_code == 200
+    
+    def test_template_used(self, client):
+        response = client.get(self.url)
+        assertTemplateUsed(response, "auctions/index.html")
+    
+    def test_username_in_response(self, client, test_user):
+        client.force_login(test_user)
+        response = client.get(self.url)
+        print(response.content)
+        assert bytes(test_user.username, encoding="UTF-8") in response.content
