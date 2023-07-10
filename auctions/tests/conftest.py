@@ -44,4 +44,4 @@ def test_category():
 
 @pytest.fixture
 def test_listing(test_category, test_user):
-    yield ListingFactory(seller=test_user, category=test_category)
+    yield ListingFactory(seller=test_user, category=test_category, is_active=True)

@@ -31,5 +31,6 @@ class ListingFactory(DjangoModelFactory):
     seller = SubFactory(UserFactory)
     category = SubFactory(CategoryFactory)
     starting_bid = fuzzy.FuzzyDecimal(.01, 100000, 2)
+    is_active = fuzzy.FuzzyChoice([True, False])
     class Meta:
         model = Listing

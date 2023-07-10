@@ -24,6 +24,7 @@ class Listing(models.Model):
     title = models.CharField(max_length=128)
     description = models.TextField()
     seller = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    is_active = models.BooleanField(default=True)
     category = models.ForeignKey(
         Category,
         related_name="listings",

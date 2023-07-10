@@ -40,3 +40,6 @@ class TestListing:
         
     def test__str__(self, test_listing):
         assert test_listing.title == str(test_listing)
+    
+    def test_active_by_default(self, test_listing):
+        assert test_listing.is_active
