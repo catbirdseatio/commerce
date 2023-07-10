@@ -21,7 +21,6 @@ class TestUser:
         assert str(test_user) == username
 
     def test_assert_superuser(self, test_superuser):
-        print(f"FIRST_NAME:{test_superuser.first_name} LAST_NAME: {test_superuser.last_name} EMAIL: {test_superuser.email}")
         assert test_superuser.email == "clarke@dailymail.com"
         assert test_superuser.is_superuser is True
         assert test_superuser.is_staff is True

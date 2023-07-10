@@ -18,7 +18,7 @@ def test_django_file():
 
 @pytest.fixture
 def test_user():
-    return UserFactory(
+    yield UserFactory(
         email="rodney@example.com",
         username="rodney_boring",
         is_superuser=False,
@@ -29,7 +29,7 @@ def test_user():
 
 @pytest.fixture
 def test_superuser():
-    return UserFactory(
+    yield UserFactory(
         email="clarke@dailymail.com",
         is_superuser=True,
         is_staff=True,

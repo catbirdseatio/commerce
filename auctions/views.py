@@ -23,7 +23,6 @@ class LoginView(View):
         
         if form.is_valid():
             user = authenticate(request, **form.cleaned_data)
-            
             if user is not None:
                 login(request, user)
                 return HttpResponseRedirect(reverse("index"))
