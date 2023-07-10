@@ -20,21 +20,21 @@ class LoginView(View):
 
     def post(self, request):
         form = LoginForm(request.POST)
-        
+
         if form.is_valid():
             user = authenticate(request, **form.cleaned_data)
             if user is not None:
                 login(request, user)
                 return HttpResponseRedirect(reverse("index"))
-            
+
             else:
                 form = LoginForm()
                 return render(
                     request,
                     "auctions/login.html",
-                    {"message": "Invalid username and/or password.",
-                    "form": form}
-                )     
+                    {"message": "Invalid username and/or password.", "form": form},
+                )
+
 
 class LogoutView(View):
     def get(self, request):
@@ -54,6 +54,7 @@ class LogoutView(View):
 #             return render(
 #                 request, "auctions/register.html", {"message": "Passwords must match."}
 #             )
+
 
 #         # Attempt to create new user
 #         try:

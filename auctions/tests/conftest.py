@@ -1,7 +1,7 @@
 import pytest
 from django.core.files.uploadedfile import SimpleUploadedFile
 
-from auctions.tests.factories import UserFactory
+from auctions.tests.factories import UserFactory, CategoryFactory, ListingFactory
 
 
 @pytest.fixture(autouse=True)
@@ -37,33 +37,11 @@ def test_superuser():
     )
 
 
-# @pytest.fixture()
-# def new_user_factory(db):
-#     def create_app_user(
-#         username,
-#         password=None,
-#         first_name="firstname",
-#         last_name="lastname",
-#         email="firstname@example.com",
-#         is_staff=False,
-#         is_superuser=False,
-#         is_active=True,
-#     ):
-#         user = User.objects.create_user(
-#             username=username,
-#             password=password,
-#             first_name=first_name,
-#             last_name=last_name,
-#             email=email,
-#             is_staff=is_staff,
-#             is_superuser=is_superuser,
-#             is_active=is_active,
-#         )
-#         return user
-
-#     yield create_app_user
+@pytest.fixture
+def test_category():
+    yield CategoryFactory(title="Musical Instruments")
 
 
-# @pytest.fixture()
-# def test_user(db, new_user_factory):
-#     yield new_user_factory("clarke_kent", "testpass123", email="clarke@daily_planet.com", is_staff=True, is_superuser=True)
+@pytest.fixture
+def test_listing(test_category, test_user):
+    yield ListingFactory(seller=test_user, category=test_category)

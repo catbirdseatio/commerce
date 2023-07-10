@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
-from factory import Faker, PostGenerationMethodCall
+from factory import  fuzzy, Faker, PostGenerationMethodCall, SubFactory
 from factory.django import DjangoModelFactory
+from auctions.models import Category, Listing
 
 
 User = get_user_model()
@@ -15,3 +16,20 @@ class UserFactory(DjangoModelFactory):
 
     class Meta:
         model = User
+
+
+class CategoryFactory(DjangoModelFactory):
+    title = Faker("title")
+
+    class Meta:
+        model = Category
+
+
+class ListingFactory(DjangoModelFactory):
+    title = Faker("pystr")
+    description = fuzzy.FuzzyText(length=300)
+    seller = SubFactory(UserFactory)
+    category = SubFactory(CategoryFactory)
+    starting_bid = fuzzy.FuzzyDecimal(.01, 100000, 2)
+    class Meta:
+        model = Listing
