@@ -129,4 +129,5 @@ if S3:
     AWS_S3_SECRET_ACCESS_KEY = env("AWS_S3_SECRET_ACCESS_KEY")
     AWS_STORAGE_BUCKET_NAME = env("AWS_STORAGE_BUCKET_NAME")
 else:
+    STORAGES["default"] = {"BACKEND": "django.core.files.storage.FileSystemStorage"}
     MEDIA_ROOT = os.path.join(BASE_DIR, "media")
