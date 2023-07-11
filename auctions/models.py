@@ -1,6 +1,18 @@
+import uuid
+import os
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth import get_user_model
 from django.db import models
+
+
+def path_and_rename(instance, filename):
+    """Function to set a path and a uuid filename"""
+    upload_to = "images"
+    ext = filename.split(".")[-1]
+    # set filename as random string
+    filename = "{}.{}".format(uuid.uuid4().hex, ext)
+    # return the whole path to the file
+    return os.path.join(upload_to, filename)
 
 
 class User(AbstractUser):
@@ -24,6 +36,8 @@ class Listing(models.Model):
     title = models.CharField(max_length=128)
     description = models.TextField()
     seller = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    starting_bid = models.DecimalField(max_digits=8, decimal_places=2)
+    profile_image = models.ImageField(upload_to=path_and_rename, blank=True, null=True)
     is_active = models.BooleanField(default=True)
     category = models.ForeignKey(
         Category,
@@ -32,7 +46,6 @@ class Listing(models.Model):
         blank=True,
         null=True,
     )
-    starting_bid = models.DecimalField(max_digits=8, decimal_places=2)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
