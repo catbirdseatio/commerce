@@ -117,7 +117,9 @@ CRISPY_TEMPLATE_PACK = "bootstrap5"
 # STATIC FILES
 STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
-STORAGES = {"staticfiles": {"BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage"}}
+STORAGES = {
+    "staticfiles": {"BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage"}
+}
 
 
 # MEDIA FILES

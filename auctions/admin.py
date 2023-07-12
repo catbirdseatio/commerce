@@ -16,6 +16,7 @@ class UserAdmin(UserAdmin):
     model = User
     list_display = ["email", "username"]
 
+
 @admin.register(Listing)
 class ListingAdmin(admin.ModelAdmin):
-    list_display = ['img_preview', 'title']
+    list_display = ["img_preview", "title"]
