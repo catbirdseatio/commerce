@@ -5,12 +5,6 @@
 
     <h2>Register</h2>
 
-    {% if messages %}
-    {% for message in messages %}
-    <div {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</div>
-    {% endfor %}
-    {% endif %}
-
     <form action="{% url 'register' %}" method="post">
         {% csrf_token %}
         {{ form|crispy }}

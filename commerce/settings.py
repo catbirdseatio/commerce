@@ -1,6 +1,7 @@
 import os
 import environ
 
+
 env = environ.Env(
     # set casting, default value
     DEBUG=(bool, False)
@@ -107,8 +108,8 @@ USE_TZ = True
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 # AUTH SETTINGS
-LOGIN_REDIRECT_URL = "index"
-LOGOUT_REDIRECT_URL = "index"
+LOGIN_REDIRECT_URL = "/"
+LOGOUT_REDIRECT_URL = "/"
 
 # CRISPY FORMS SETTINGS
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"

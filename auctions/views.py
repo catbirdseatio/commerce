@@ -1,25 +1,52 @@
+from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
 from django.views.generic.edit import CreateView
 from django.views import View
 
-from .forms import CustomUserCreationForm, LoginForm
+from auctions.forms import CustomUserCreationForm, LoginForm, ListingForm
+from auctions.models import Listing
 
 
 class IndexView(View):
     def get(self, request):
-        return render(request, "auctions/index.html")
+        listings = Listing.objects.all()
+        return render(request, "auctions/index.html", {"listings": listings})
 
 
-class LoginView(View):
+class CreateListingView(LoginRequiredMixin,View):
+    form_class = ListingForm
+    login_url = reverse_lazy("login")
+    
+    def post(self, request):
+        form = self.form_class(request.POST,request.FILES)
+        
+        if form.is_valid():
+            data = {**form.cleaned_data, "seller": request.user}
+            Listing.objects.create(**data)
+            messages.success(request, "The listing was successfully created.")
+            return HttpResponseRedirect(reverse("index"))
+        else:
+            return render(request, "auctions/create.html", {"form": form})
+        
+        
     def get(self, request):
-        form = LoginForm()
+        form =self.form_class
+        return render(request, "auctions/create.html", {"form": form})
+
+
+class LoginView(View): 
+    form_class = LoginForm
+    
+    def get(self, request):
+        form = self.form_class()
         return render(request, "auctions/login.html", {"form": form})
 
     def post(self, request):
-        form = LoginForm(request.POST)
+        form = self.form_class(request.POST)
 
         if form.is_valid():
             user = authenticate(request, **form.cleaned_data)
@@ -28,17 +55,19 @@ class LoginView(View):
                 return HttpResponseRedirect(reverse("index"))
 
             else:
-                form = LoginForm()
+                form = self.form_class()
+                messages.danger(request, "Invalid username and/or password.")
                 return render(
                     request,
                     "auctions/login.html",
-                    {"message": "Invalid username and/or password.", "form": form},
+                    {"form": form},
                 )
 
 
 class LogoutView(View):
     def get(self, request):
         logout(request)
+        messages.success(request, "You have been logged out.")
         return HttpResponseRedirect(reverse("index"))
 
 
