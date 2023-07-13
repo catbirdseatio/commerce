@@ -2,10 +2,22 @@
 
 {% block body %}
     <h2>Active Listings</h2>
-    <div class="listings-container">
+    <div class="listings-container mb-5">
     {% for listing in listings %}
-    <div>
-        {{ listing.title }}
+    <div class="listing-card">
+        <figure>
+            {% if listing.profile_image %}
+                <img src="{{listing.profile_image.url }}" alt="{{ listing.title }}">
+            {% else %}
+                <p>No Image</p>
+            {% endif %}
+        </figure>
+        <div class="listing-content">
+            <p>{{ listing.title }}</p>
+            <p class="price">Price: {{ listing.starting_bid }}</p>
+            <div>{{ listing.description|truncatewords:5 }}</div>
+            <span>{{ listing.created_at }}</span>
+        </div>
     </div>
     {% empty %}
         <p>There are no listings</p>

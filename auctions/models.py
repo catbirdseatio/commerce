@@ -51,7 +51,9 @@ class Listing(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def img_preview(self):
-        return mark_safe(f'<img src="{self.profile_image.url}" width="150" />')
+        if self.profile_image:
+            return mark_safe(f'<img src="{self.profile_image.url}" width="150" />')
+        return None
 
     def __str__(self):
         return self.title
