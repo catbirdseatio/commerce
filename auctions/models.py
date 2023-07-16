@@ -1,9 +1,11 @@
 import uuid
 import os
+import string
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth import get_user_model
 from django.utils.html import mark_safe
 from django.db import models
+from django_extensions.db.fields import AutoSlugField
 
 
 def path_and_rename(instance, filename):
@@ -35,6 +37,7 @@ class Category(models.Model):
 
 class Listing(models.Model):
     title = models.CharField(max_length=128)
+    slug = AutoSlugField(populate_from='title')
     description = models.TextField()
     seller = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     starting_bid = models.DecimalField(max_digits=8, decimal_places=2)
@@ -54,6 +57,9 @@ class Listing(models.Model):
         if self.profile_image:
             return mark_safe(f'<img src="{self.profile_image.url}" width="150" />')
         return None
+    
+    def slugify_function(self, content):
+        return content.translate({ord(c): '-' for c in string.whitespace}).lower()
 
     def __str__(self):
         return self.title

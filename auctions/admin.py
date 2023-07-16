@@ -19,4 +19,4 @@ class UserAdmin(UserAdmin):
 
 @admin.register(Listing)
 class ListingAdmin(admin.ModelAdmin):
-    list_display = ["img_preview", "title"]
+    list_display = ["img_preview", "title", "slug"]

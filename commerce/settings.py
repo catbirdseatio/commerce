@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "crispy_forms",
     "crispy_bootstrap4",
+    'django_extensions',
     "auctions",
 ]
 
@@ -106,6 +107,9 @@ USE_TZ = True
 
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
+
+# SHELL_PLUS SETTINGS
+SHELL_PLUS = "ipython"
 
 # AUTH SETTINGS
 LOGIN_REDIRECT_URL = "/"
