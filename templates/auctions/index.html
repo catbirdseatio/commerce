@@ -9,7 +9,7 @@
         {% if listing.profile_image %}
         <img class="card-img-top" src="{{ listing.profile_image.url }}" alt="{{ listing.title }}">
         {% else %}
-        <img class="card-img-top" src="{{ {% static 'auctions/default.png' %}}}" alt="{{ listing.title }}">
+        <img class="card-img-top" src="{% static 'auctions/default.png' %}" alt="{{ listing.title }}">
         {% endif %}
         <div class="card-body">
           <h5 class="card-title text-center">{{ listing.title }}</h5>
