@@ -1,0 +1,7 @@
+[run]
+branch = true
+omit = */tests/*, */migrations/*, */urls.py, commerce/*, manage.py, venv/*
+source = .
+
+[report]
+show_missing = true

@@ -56,7 +56,7 @@ class LoginView(View):
 
             else:
                 form = self.form_class()
-                messages.danger(request, "Invalid username and/or password.")
+                messages.error(request, "Invalid username and/or password.")
                 return render(
                     request,
                     "auctions/login.html",

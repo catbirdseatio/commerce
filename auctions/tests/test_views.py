@@ -33,8 +33,8 @@ class TestRegisterView:
 
     def test_unsuccessful_registration(self, client, test_user):
         data = {
-            "username": "rodney_boring",
-            "email": "rodney@example.com",
+            "username": test_user.username,
+            "email": test_user.email,
             "password1": "Testpass123",
             "password2": "Testpass123",
         }
@@ -56,7 +56,7 @@ class TestLoginView:
 
     def test_successful_login(self, test_user, client):
         data = {
-            "username": "rodney_boring",
+            "username": test_user.username,
             "password": "Testpass123",
         }
         response = client.post(self.url, data)
@@ -87,6 +87,7 @@ class TestIndexView:
 
     def test_username_in_response(self, client, test_user):
         client.login(username=test_user.username, password="Testpass123")
+        print(client.cookies)
         response = client.get(self.url)
         assert bytes(test_user.username, encoding="UTF-8") in response.content
 
