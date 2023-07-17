@@ -1,27 +1,24 @@
 @import url("https://fonts.googleapis.com/css2?family=PT+Sans&display=swap");
-html, body {
-  height: 100%;
-}
-
 hr {
   margin-bottom: 0;
 }
 
-.content {
-  height: 100%;
+.container-fluid {
+  background-color: eee;
 }
-.content .listings-container {
+
+.listings-container {
   font-family: "PT Sans", sans-serif;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
   grid-gap: 1rem;
 }
-.content .listings-container .card-img-top {
+.listings-container .card-img-top {
   width: 100%;
   height: 18rem;
   object-fit: cover;
 }
-.content .listings-container .card-description {
+.listings-container .card-description {
   height: 3rem;
 }
 

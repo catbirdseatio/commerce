@@ -1,30 +1,31 @@
 @import url("https://fonts.googleapis.com/css2?family=PT+Sans&display=swap");
 
-html, body {
-    height: 100%;
-}
+// html,
+// body {
+//     height: 100%;
+// }
 
 hr {
     margin-bottom: 0;
 }
-.content {
-    height: 100%;
 
-    .listings-container {
-        font-family: 'PT Sans', sans-serif;
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
-        grid-gap: 1rem;
-
-        .card-img-top {
-            width: 100%;
-            height: 18rem;
-            object-fit: cover;
-        }
-
-        .card-description {
-            height: 3rem;
-        }
-    }
+.container-fluid {
+    background-color: eee;
 }
 
+.listings-container {
+    font-family: "PT Sans", sans-serif;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+    grid-gap: 1rem;
+
+    .card-img-top {
+        width: 100%;
+        height: 18rem;
+        object-fit: cover;
+    }
+
+    .card-description {
+        height: 3rem;
+    }
+}

@@ -5,7 +5,7 @@
     <h2 class="text-center py-3">Active Listings</h2>
     <div class="listings-container">
     {% for listing in listings %}
-    <div class="card listing-card shadow">
+    <div class="card listing-card shadow mb-3">
         {% if listing.profile_image %}
         <img class="card-img-top" src="{{ listing.profile_image.url }}" alt="{{ listing.title }}">
         {% else %}
@@ -18,7 +18,7 @@
         <div class="card-body">
           <p class="card-text font-weight-bold text-center">${{ listing.starting_bid }}</p>
         </div>
-        <div class="card-footer">
+        <div class="card-body">
           <a href="#" class="btn btn-primary btn-block">Learn More</a>
         </div>
       </div>
