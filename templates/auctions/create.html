@@ -4,11 +4,7 @@
 {% block title %}{{ block.super }} - Create Listing{% endblock  %}
 {% block body %}
 
-    <h2>Create Listing</h2>
-
-    {% if message %}
-        <div>{{ message }}</div>
-    {% endif %}
+    <h2 class="text-center">Create Listing</h2>
 
     <form action="{% url 'create' %}" method="post" class="col-md-6 offset-md-3"
         enctype="multipart/form-data">
