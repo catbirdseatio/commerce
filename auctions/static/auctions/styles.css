@@ -17,5 +17,8 @@ hr {
   height: 18rem;
   object-fit: cover;
 }
+.content .listings-container .card-description {
+  height: 3rem;
+}
 
 /*# sourceMappingURL=styles.css.map */
