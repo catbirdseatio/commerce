@@ -94,3 +94,17 @@ class TestIndexView:
     def test_cannot_post(self, client):
         response = client.post(self.url, {})
         assert response.status_code == 405
+
+
+class TestCreateView:
+    url = reverse("create")
+    
+    def test_authenticated_user_can_get(self, client, test_user):
+        client.login(username=test_user.username, password="Testpass123")
+        response = client.get(self.url)
+        assert response.status_code == 200
+    
+    def test_anonymous_user_cannot_get(self, client):
+        response = client.get(self.url, follow_redirects=True)
+        assert response.status_code == 404
+        
