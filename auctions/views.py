@@ -38,6 +38,12 @@ class CreateListingView(LoginRequiredMixin,View):
         return render(request, "auctions/create.html", {"form": form})
 
 
+class DetailListingView(View):
+    def get(self, request, slug):
+        listing = Listing.objects.get(slug=slug)
+        return render(request, "auctions/detail.html", {"listing": listing})
+
+
 class LoginView(View): 
     form_class = LoginForm
     

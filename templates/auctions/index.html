@@ -19,7 +19,7 @@
           <p class="card-text font-weight-bold text-center">${{ listing.starting_bid }}</p>
         </div>
         <div class="card-body">
-          <a href="#" class="btn btn-primary btn-block">Learn More</a>
+          <a href="{% url 'detail' listing.slug %}" class="btn btn-primary btn-block">Learn More</a>
         </div>
       </div>
     {% empty %}

@@ -1,16 +1,11 @@
 @import url("https://fonts.googleapis.com/css2?family=PT+Sans&display=swap");
 
-// html,
-// body {
-//     height: 100%;
-// }
-
 hr {
     margin-bottom: 0;
 }
 
 .container-fluid {
-    background-color: eee;
+    background-color: #eee;
 }
 
 .listings-container {
@@ -27,5 +22,68 @@ hr {
 
     .card-description {
         height: 3rem;
+    }
+}
+
+.listing-container {
+    display: grid;
+
+    .card {
+        grid-area: "card";
+        width: 100%;
+
+        .card-img-top {
+            width: 100%;
+            height: 18rem;
+            object-fit: cover;
+        }
+
+        .card-body {
+            padding: 0;
+        }
+
+        .card-title {
+            margin-bottom: 0;
+        }
+
+        form {
+            padding: 1rem;
+        }
+    }
+
+    .details {
+        grid-area: "details";
+        border: 1px solid blue;
+    }
+
+    .comments {
+        grid-area: "comments";
+        border: 1px solid green;
+    }
+
+    gap: 1rem;
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(10rem, auto);
+    grid-template-areas:
+        "card"
+        "details"
+        "comments";
+
+    @media screen and (min-width: 600px) {
+        & {
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-areas:
+                "card details"
+                "comments";
+        }
+    }
+
+    @media screen and (min-width: 800px) {
+        & {
+            grid-template-columns: 18rem 3fr;
+            grid-template-areas:
+                "card details"
+                ". comments";
+        }
     }
 }

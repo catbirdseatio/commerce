@@ -4,7 +4,7 @@ hr {
 }
 
 .container-fluid {
-  background-color: eee;
+  background-color: #eee;
 }
 
 .listings-container {
@@ -20,6 +20,52 @@ hr {
 }
 .listings-container .card-description {
   height: 3rem;
+}
+
+.listing-container {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+  grid-template-rows: minmax(10rem, auto);
+  grid-template-areas: "card" "details" "comments";
+}
+.listing-container .card {
+  grid-area: "card";
+  width: 100%;
+}
+.listing-container .card .card-img-top {
+  width: 100%;
+  height: 18rem;
+  object-fit: cover;
+}
+.listing-container .card .card-body {
+  padding: 0;
+}
+.listing-container .card .card-title {
+  margin-bottom: 0;
+}
+.listing-container .card form {
+  padding: 1rem;
+}
+.listing-container .details {
+  grid-area: "details";
+  border: 1px solid blue;
+}
+.listing-container .comments {
+  grid-area: "comments";
+  border: 1px solid green;
+}
+@media screen and (min-width: 600px) {
+  .listing-container {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-areas: "card details" "comments";
+  }
+}
+@media screen and (min-width: 800px) {
+  .listing-container {
+    grid-template-columns: 18rem 3fr;
+    grid-template-areas: "card details" ". comments";
+  }
 }
 
 /*# sourceMappingURL=styles.css.map */

@@ -1,0 +1,28 @@
+{% extends "auctions/layout.html" %} 
+{% load static %}
+{% load crispy_forms_tags %} 
+
+{% block title %}{{ block.super }} - {{ listing.title }}{% endblock %} 
+
+{% block body %} 
+<div class="listing-container pt-3">
+    <div class="card">
+        <img class="card-img-top" src="{{ listing.profile_image.url }}" alt="Card image cap">
+        <div class="card-body">
+          <h5 class="card-title text-center">{{ listing.title }} </h5>
+        </div>
+        <div class="card-body">
+            <form>
+                <div class="form-group">
+                    <input type="number"  name="bidAmount" class="form-control">
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Place Bid</button>
+            </form>
+        </div>
+    </div>
+    <div class="details"></div>
+    <div class="comments"> Lorem ipsum dolor sit amet consectetur adipisicing elit. Eligendi perspiciatis consectetur
+        sed sapiente eaque, blanditiis rem nesciunt placeat. Ex unde quos obcaecati dicta voluptas sunt distinctio
+        cupiditate tenetur quis adipisci culpa sit fugit eius iure vel, rerum quam natus temporibus suscipit excepturi
+        deleniti similique error non. Voluptatibus provident magnam doloribus. </div>
+</div> {% endblock %}
