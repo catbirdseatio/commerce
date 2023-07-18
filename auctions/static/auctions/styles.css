@@ -27,11 +27,12 @@ hr {
   gap: 1rem;
   grid-template-columns: 1fr;
   grid-template-rows: minmax(10rem, auto);
-  grid-template-areas: "card" "details" "comments";
 }
 .listing-container .card {
-  grid-area: "card";
+  grid-column: 1;
   width: 100%;
+  border-radius: 1rem;
+  overflow: hidden;
 }
 .listing-container .card .card-img-top {
   width: 100%;
@@ -48,23 +49,25 @@ hr {
   padding: 1rem;
 }
 .listing-container .details {
-  grid-area: "details";
   border: 1px solid blue;
 }
 .listing-container .comments {
-  grid-area: "comments";
   border: 1px solid green;
 }
 @media screen and (min-width: 600px) {
   .listing-container {
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-areas: "card details" "comments";
+    grid-template-columns: 18rem 18rem 1fr;
+  }
+  .listing-container .details {
+    grid-column: 2/span 2;
+  }
+  .listing-container .comments {
+    grid-column: 1/span 3;
   }
 }
 @media screen and (min-width: 800px) {
-  .listing-container {
-    grid-template-columns: 18rem 3fr;
-    grid-template-areas: "card details" ". comments";
+  .listing-container .comments {
+    grid-column: 2/span 2;
   }
 }
 

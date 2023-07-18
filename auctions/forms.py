@@ -2,7 +2,8 @@ from typing import Any, Dict
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.contrib.auth import get_user_model
-from auctions.models import Listing
+
+from auctions.models import Listing, Bid
 
 
 User = get_user_model()
@@ -42,3 +43,33 @@ class ListingForm(forms.ModelForm):
             forms.ValidationError("Starting bid must be more than .01")
         return data
     
+
+class BidForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        """Add user and listing to the form instance."""
+        self.listing = kwargs.pop("listing")
+        self.user = kwargs.pop("user")
+
+        super().__init__(*args, **kwargs)
+    
+    class Meta:
+        model = Bid
+        fields = ("bid_price",)
+    
+    def clean_bid_price(self):
+        data = self.cleaned_data.get("bid_price")
+        if self.listing.number_of_bids > 0 and data <= self.listing.current_price:
+            raise forms.ValidationError("Bid price must exceed current price")
+        elif data < self.listing.current_price:
+            raise forms.ValidationError("Bid must be greater than or equal to starting bid.")
+        
+        return data
+        
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        instance.user = self.user
+        instance.listing = self.listing
+        
+        if commit:
+            instance.save()
+        return instance

@@ -1,9 +1,11 @@
+from typing import Set
 import uuid
 import os
 import string
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth import get_user_model
 from django.utils.html import mark_safe
+from django.urls import reverse
 from django.db import models
 from django_extensions.db.fields import AutoSlugField
 
@@ -25,6 +27,19 @@ class User(AbstractUser):
         return self.username
 
 
+class Bid(models.Model):
+    user = models.ForeignKey("User", on_delete=models.CASCADE)
+    listing = models.ForeignKey("Listing", on_delete=models.CASCADE)
+    bid_price = models.DecimalField(max_digits=8, decimal_places=2)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        get_latest_by = ["bid_price"]
+
+    def __str__(self):
+        return f"Bid #{self.pk}: {self.bid_price}"
+
+
 class Category(models.Model):
     title = models.CharField(max_length=64)
 
@@ -35,7 +50,7 @@ class Category(models.Model):
         return self.title
 
 
-class Listing(models.Model):
+class Listing(models.Model): 
     title = models.CharField(max_length=128)
     slug = AutoSlugField(populate_from='title')
     description = models.TextField()
@@ -61,5 +76,25 @@ class Listing(models.Model):
     def slugify_function(self, content):
         return content.translate({ord(c): '-' for c in string.whitespace}).lower()
 
+    @property
+    def number_of_bids(self):
+        return (
+            Bid.objects.prefetch_related("listing").filter(listing_id=self.pk).count()
+        )
+    
+    @property
+    def current_price(self):
+        bids = Bid.objects.prefetch_related("listing").filter(listing_id=self.pk)
+
+        if bids.count() > 0:
+            return bids.latest().bid_price
+        
+        else:
+            return self.starting_bid
+
     def __str__(self):
         return self.title
+    
+    def get_absolute_url(self):
+        return reverse("detail", kwargs={"slug": self.slug})
+    

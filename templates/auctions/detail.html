@@ -1,5 +1,5 @@
 {% extends "auctions/layout.html" %} 
-{% load static %}
+{% load static %} 
 {% load crispy_forms_tags %} 
 
 {% block title %}{{ block.super }} - {{ listing.title }}{% endblock %} 
@@ -9,20 +9,26 @@
     <div class="card">
         <img class="card-img-top" src="{{ listing.profile_image.url }}" alt="Card image cap">
         <div class="card-body mt-2">
-          <h5 class="card-title text-center">{{ listing.title }} </h5>
+            <h5 class="card-title text-center">Bid</h5>
         </div>
         <div class="card-body">
-            <form>
-                <div class="form-group">
-                    <input type="number"  name="bidAmount" class="form-control">
-                </div>
+            <form method="post">
+                {% csrf_token %}
+                {{ form|crispy}}
                 <button type="submit" class="btn btn-primary btn-block">Place Bid</button>
             </form>
         </div>
     </div>
-    <div class="details"></div>
-    <div class="comments"> Lorem ipsum dolor sit amet consectetur adipisicing elit. Eligendi perspiciatis consectetur
-        sed sapiente eaque, blanditiis rem nesciunt placeat. Ex unde quos obcaecati dicta voluptas sunt distinctio
-        cupiditate tenetur quis adipisci culpa sit fugit eius iure vel, rerum quam natus temporibus suscipit excepturi
-        deleniti similique error non. Voluptatibus provident magnam doloribus. </div>
+    <div class="details">
+        <h2 class="text-center">HAI</h2>
+    </div>
+    <div class="comments">
+        <h2 class="text-center">Comments</h2>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Eligendi perspiciatis consectetur sed sapiente
+            eaque, blanditiis rem nesciunt placeat. Ex unde quos obcaecati dicta voluptas sunt distinctio cupiditate
+            tenetur quis adipisci culpa sit fugit eius iure vel, rerum quam natus temporibus suscipit excepturi deleniti
+            similique error non. Voluptatibus provident magnam doloribus. </p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quibusdam, blanditiis nobis dicta deserunt
+            assumenda omnis impedit cum debitis unde pariatur quisquam quos possimus incidunt praesentium?</p>
+    </div>
 </div> {% endblock %}
