@@ -2,6 +2,7 @@ import pytest
 from django.urls import reverse
 from django.contrib.auth import get_user_model
 from pytest_django.asserts import assertTemplateUsed
+from auctions.models import Listing
 
 
 pytestmark = pytest.mark.django_db
@@ -87,7 +88,6 @@ class TestIndexView:
 
     def test_username_in_response(self, client, test_user):
         client.login(username=test_user.username, password="Testpass123")
-        print(client.cookies)
         response = client.get(self.url)
         assert bytes(test_user.username, encoding="UTF-8") in response.content
 
@@ -104,7 +104,13 @@ class TestCreateView:
         response = client.get(self.url)
         assert response.status_code == 200
     
+    def test_authenticated_user_can_post__with_image_success(self, client, test_user, valid_image):
+        client.login(username=test_user.username, password="Testpass123")
+        response = client.post(self.url, data={"title" : "Post Listing", "description": "A LISTING", "starting_bid": 1, "profile_image": valid_image}, follow=True)
+        assert b"The listing was successfully created." in response.content
+        assert Listing.objects.filter(title="Post Listing").count() == 1
+    
     def test_anonymous_user_cannot_get(self, client):
         response = client.get(self.url, follow_redirects=True)
-        assert response.status_code == 404
+        assert response.status_code == 302
         

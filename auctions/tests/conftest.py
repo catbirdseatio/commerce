@@ -1,4 +1,6 @@
 import pytest
+from io import BytesIO
+from PIL import Image as img
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.contrib.auth import get_user_model
 
@@ -19,9 +21,21 @@ def media_storage(settings, tmpdir):
 
 @pytest.fixture(scope="function")
 def test_django_file():
-    image = SimpleUploadedFile("test.jpeg", b"fileContent", content_type="image/jpeg")
+    image = SimpleUploadedFile("test.jpeg", b"000000", content_type="image/jpeg")
     # client.post(url, {'image_field_name': test_django_file})
     yield image
+
+
+@pytest.fixture
+def valid_image():
+    """Helper to for creating test image for view tests."""
+    image_file = BytesIO()
+    image = img.new('RGBA', size=(50, 50), color=(155, 0, 0))
+    image.save(image_file, 'png')
+    image_file.name = 'test_image.png'
+    image_file.seek(0)
+    return image_file
+
 
 
 @pytest.fixture
@@ -38,3 +52,11 @@ def test_listing(db, test_user, test_django_file):
     seller=test_user,
     starting_bid=1.25,
     profile_image =test_django_file)
+
+
+@pytest.fixture
+def imageless_listing(db, test_user):
+    yield Listing.objects.create(title="An Imageless Listing",
+    description=DESCRIPTION,
+    seller=test_user,
+    starting_bid=1.25)
