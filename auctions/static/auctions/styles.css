@@ -1,6 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=PT+Sans&display=swap");
 body, html {
   height: 100%;
+  overflow: visible;
 }
 
 hr {
@@ -43,7 +44,6 @@ hr {
   grid-column: 1;
   width: 100%;
   border-radius: 1rem;
-  overflow: hidden;
 }
 .listing-container .card .card-img-top {
   width: 100%;

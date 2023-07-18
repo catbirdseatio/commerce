@@ -2,6 +2,7 @@
 
 body, html {
     height: 100%;
+    overflow: visible;
 }
 
 hr {
@@ -43,7 +44,6 @@ hr {
         grid-column: 1;
         width: 100%;
         border-radius: 1rem;
-        overflow: hidden;
 
         .card-img-top {
             width: 100%;
