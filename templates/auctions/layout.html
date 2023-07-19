@@ -10,6 +10,7 @@
         <link href="{% static 'auctions/styles.css' %}" rel="stylesheet">
     </head>
     <body>
+        <header>
         <div class="p-2">
             <h1>Auctions</h1>
             {% if user.is_authenticated %}
@@ -39,7 +40,8 @@
             {% endif %}
         </ul>
         <hr class="shadow-lg">
-        <main class="pb-3">
+        </header>
+        <main>
             {% include 'includes/_messages.html' %}
             <div class="container-fluid">
             {% block body %}{% endblock %}

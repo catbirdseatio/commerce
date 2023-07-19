@@ -2,8 +2,9 @@
 {% load crispy_forms_tags %}
 
 {% block title %}{{ block.super }} - Login{% endblock  %}
+
 {% block body %}
-    <form action="{% url 'login' %}" method="post" class="col-md-6 offset-md-3">
+    <form action="{% url 'login' %}" method="post" class="col-md-6 offset-md-3 h-auto">
         <h2 class="text-center py-3">Login</h2>
         {% csrf_token %}
         {{ form|crispy }}

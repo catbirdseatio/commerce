@@ -1,12 +1,14 @@
 {% extends "auctions/layout.html" %}
 {% load crispy_forms_tags %}
 
+{% block title %}{{ block.super }} - Register{% endblock  %}
+
 {% block body %}
     <form action="{% url 'register' %}" method="post" class="col-md-6 offset-md-3">
         <h2 class="text-center py-3">Register</h2>
         {% csrf_token %}
         {{ form|crispy }}
-        <button class="btn btn-primary">Register</button>
-        <p>Already have an account? <a href="{% url 'login' %}">Log In here.</a></p>
+        <input class="btn btn-primary" type="submit" value="Login">
+        <p class="my-2">Already have an account? <a href="{% url 'login' %}">Login.</a></p>
     </form>
 {% endblock %}
