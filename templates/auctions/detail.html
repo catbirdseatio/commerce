@@ -12,7 +12,7 @@
                 <img class="card-img-top" src="{{ listing.profile_image.url }}" alt="Card image cap">
                 <div class="card-body">
                     <h5 class="card-title text-center">Bid</h5>
-                    <p class="mb-0"><strong>Current Price: ${{ listing.current_price }}</strong></p>
+                    <p class="mb-0">There are {{ listing.bids.count }} bids.</p>
                 </div>
                 <div class="card-body">
                     {% if user.is_authenticated %}
@@ -30,12 +30,14 @@
             </div>
         </div>
         <div class="col-xs-12 col-sm-6 col-lg-8">
-            <div class="card">
-                <div class="card-header text-center  bg-info">{{ listing.title }}</div>
+            <div class="card h-100 bg-info">
+                <div class="card-header text-center">{{ listing.title }}</div>
                 <div class="card-body bg-light">
-                    <div class="card-text">
+                    <div class="card-text bg-light">
                         {{ listing.description|linebreaks }}
-                        <p>Seller: {{ listing.seller }}</p>
+                        <p><strong>Current Price: ${{ listing.current_price }}</strong></p>
+                        <p><strong>Seller:</strong> {{ listing.seller }}</p>
+                        <p class="text-muted">Listed on {{ listing.created_at }}</p>
                     </div>
                 </div>
                 <div class="card-footer"></div>
