@@ -2,13 +2,17 @@
 <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4"> {% for listing in listings %} 
   <div class="col">
     <div class="card">
+      {% if  listing.profile_image %}
       <img src="{{ listing.profile_image.url }}" alt="{{ lisiting.title }}" class="card-img-top" />
+      {% else %}
+        <img src="{% static 'auctions/default.png' %}" alt="{{ listing.title }}" class="card-img-top">
+      {% endif %}
       <div class="card-body">
-        <h5 class="card-title">{{ listing.title }}</h5>
+        <h5 class="card-title text-center">{{ listing.title }}</h5>
         <p class="card-text">{{ listing.description|truncatewords:15 }}</p>
       </div>
       <div class="d-grid m-2">
-        <a href="{{ listing.get_abosolute_url }}" class="btn btn-primary btn-block">Learn More</a>
+        <a href="{{ listing.get_absolute_url }}" class="btn btn-primary btn-block">Learn More</a>
       </div>
     </div>
   </div> 
