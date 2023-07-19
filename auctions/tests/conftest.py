@@ -4,14 +4,7 @@ from PIL import Image as img
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.contrib.auth import get_user_model
 
-from auctions.models import Listing
-
-
-DESCRIPTION = """
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean aliquam nisi ac ipsum lobortis facilisis.
-Aliquam nec dui vel arcu luctus aliquet. Fusce in dolor nulla. Nullam cursus et nunc id euismod. Donec eget sem vel sem aliquet ornare eget non augue. 
-Vivamus id lorem viverra, pellentesque ante eu, elementum felis. Nullam porttitor sem in nulla accumsan, quis sagittis mauris cursus. Cras orci est, condimentum eget rhoncus nec, sodales non odio.
-"""
+from auctions.tests.factories import CategoryFactory, UserFactory, ListingFactory, BidFactory
 
 
 @pytest.fixture(autouse=True)
@@ -39,24 +32,24 @@ def valid_image():
 
 
 @pytest.fixture
-def test_user(db):
-    yield get_user_model().objects.create_user(
-        username="testuser", email="test@example.com", password="Testpass123"
-    )
+def test_user():
+    return UserFactory()
 
 
 @pytest.fixture
-def test_listing(db, test_user, test_django_file):
-    yield Listing.objects.create(title="A Listing",
-    description=DESCRIPTION,
-    seller=test_user,
-    starting_bid=1.25,
-    profile_image =test_django_file)
+def test_category():
+    return CategoryFactory()
 
 
 @pytest.fixture
-def imageless_listing(db, test_user):
-    yield Listing.objects.create(title="An Imageless Listing",
-    description=DESCRIPTION,
-    seller=test_user,
-    starting_bid=1.25)
+def test_listing():
+    return ListingFactory()
+
+
+@pytest.fixture
+def imageless_listing():
+    return ListingFactory(profile_image=None)
+
+@pytest.fixture
+def testing_bid():
+    return BidFactory()

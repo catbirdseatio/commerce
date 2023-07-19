@@ -2,6 +2,7 @@ import re
 import uuid
 import pytest
 from auctions.models import User, Category, Listing
+from auctions.tests.factories import BidFactory
 
 
 pytestmark = pytest.mark.django_db
@@ -14,9 +15,16 @@ class TestImage:
         test_django_file.content_type == "image/jpeg"
         
 
+class TestCategory:
+    def test__str__(self, test_category):
+        assert test_category.title == str(test_category)
+        assert test_category.__str__() == test_category.title
+
+
 class TestUser:
     def test__str__(self, test_user):
         assert test_user.username == str(test_user)
+        assert test_user.__str__() == test_user.username
 
 
 class TestListing:
@@ -44,12 +52,34 @@ class TestListing:
     
     def test__str__(self, test_listing):
         assert test_listing.title == str(test_listing)
+        assert test_listing.__str__() == test_listing.title
     
     def test_user_current_price_is_starting_bid(self, test_listing):
         assert test_listing.starting_bid == test_listing.current_price
     
+    def test_user_current_price_is_highest_bid(self, test_listing):
+        bids = [BidFactory(listing=test_listing) for i in range(5)]
+            
+        bids[4].bid_price == test_listing.current_price
+    
     def test_user_number_of_bids_is_zero(self, test_listing):
         assert test_listing.number_of_bids == 0
     
+    def test_user_number_of_bids_is_one(self, test_listing):
+        BidFactory(listing=test_listing)
+        assert test_listing.number_of_bids == 1
+    
+    def test_user_number_of_bids_is_five(self, test_listing):
+        for i in range(5):
+            BidFactory(listing=test_listing)
+        assert test_listing.number_of_bids == 5
+    
     def test_slug(self, test_listing):
         assert test_listing.slugify_function(test_listing.title) == test_listing.slug
+        
+
+class TestBid:
+    def test__str__(self, testing_bid):
+        bid_string = f"Bid #{testing_bid.id}: {testing_bid.bid_price}"
+        assert testing_bid.__str__() == bid_string
+        assert str(testing_bid) == bid_string

@@ -2,6 +2,7 @@
 branch = true
 omit = */tests/*, */migrations/*, */urls.py, commerce/*, manage.py, venv/*
 source = .
+disable_warnings = already-imported
 
 [report]
 show_missing = true
