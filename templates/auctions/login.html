@@ -3,13 +3,11 @@
 
 {% block title %}{{ block.super }} - Login{% endblock  %}
 {% block body %}
-    <form action="{% url 'login' %}" method="post">
+    <form action="{% url 'login' %}" method="post" class="col-md-6 offset-md-3">
         <h2 class="text-center py-3">Login</h2>
         {% csrf_token %}
         {{ form|crispy }}
         <input class="btn btn-primary" type="submit" value="Login">
+        <p class="my-2">Don't have an account? <a href="{% url 'register' %}">Register here.</a></p>
     </form>
-
-    Don't have an account? <a href="{% url 'register' %}">Register here.</a>
-
 {% endblock %}
