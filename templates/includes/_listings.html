@@ -4,11 +4,11 @@
     <div class="card">
       <img src="{{ listing.profile_image.url }}" alt="{{ lisiting.title }}" class="card-img-top" />
       <div class="card-body">
-        <h5 class="card-title">Mesa Boogie Amplifier</h5>
+        <h5 class="card-title">{{ listing.title }}</h5>
         <p class="card-text">{{ listing.description|truncatewords:15 }}</p>
       </div>
       <div class="d-grid m-2">
-        <a href="" class="btn btn-primary btn-block">Learn More</a>
+        <a href="{{ listing.get_abosolute_url }}" class="btn btn-primary btn-block">Learn More</a>
       </div>
     </div>
   </div> 
