@@ -5,34 +5,49 @@
 {% block title %}{{ block.super }} - {{ listing.title }}{% endblock %} 
 
 {% block body %} 
-<div class="listing-container pt-3">
-    <div class="card">
-        <img class="card-img-top" src="{{ listing.profile_image.url }}" alt="Card image cap">
-        <div class="card-body mt-2">
-            <h5 class="card-title text-center">Bid</h5>
+<div class="listing-container pt-3 grid">
+    <div class="row g-3">
+        <div class="col-xs-12 col-sm-6 col-lg-4">
+            <div class="card">
+                <img class="card-img-top" src="{{ listing.profile_image.url }}" alt="Card image cap">
+                <div class="card-body mt-2">
+                    <h5 class="card-title text-center">Bid</h5>
+                </div>
+                <div class="card-body">
+                    {% if user.is_authenticated %}
+                        <form method="post">
+                            {% csrf_token %}
+                            {{ form|crispy}}
+                            <button type="submit" class="btn btn-primary btn-block">Place Bid</button>
+                        </form>
+                    {% else %}
+                        <p class="text-center pt-3">Log in to place bid.</p>
+                    {% endif %}
+                </div>
+            </div>
         </div>
-        <div class="card-body">
-            {% if user.is_authenticated %}
-                <form method="post">
-                    {% csrf_token %}
-                    {{ form|crispy}}
-                    <button type="submit" class="btn btn-primary btn-block">Place Bid</button>
-                </form>
-            {% else %}
-                <p class="text-center pt-3">Log in to place bid.</p>
-            {% endif %}
+        <div class="col-xs-12 col-sm-6 col-lg-8">
+            <div class="card">
+                <div class="card-header text-center  bg-info">{{ listing.title }}</div>
+                <div class="card-body bg-light">
+                    <div class="card-text">
+                        <p>{{ listing.description }}</p>
+                    </div>
+                </div>
+                <div class="card-footer"></div>
+            </div>
         </div>
     </div>
-    <div class="details">
-        <h2 class="text-center">HAI</h2>
+    <div class="row">
+        <div class="comments col-md-12 offset-lg-4 col-lg-8">
+            <h2 class="text-center">Comments</h2>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Eligendi perspiciatis consectetur sed sapiente
+                eaque, blanditiis rem nesciunt placeat. Ex unde quos obcaecati dicta voluptas sunt distinctio cupiditate
+                tenetur quis adipisci culpa sit fugit eius iure vel, rerum quam natus temporibus suscipit excepturi deleniti
+                similique error non. Voluptatibus provident magnam doloribus. </p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quibusdam, blanditiis nobis dicta deserunt
+                assumenda omnis impedit cum debitis unde pariatur quisquam quos possimus incidunt praesentium?</p>
+        </div>
     </div>
-    <div class="comments">
-        <h2 class="text-center">Comments</h2>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Eligendi perspiciatis consectetur sed sapiente
-            eaque, blanditiis rem nesciunt placeat. Ex unde quos obcaecati dicta voluptas sunt distinctio cupiditate
-            tenetur quis adipisci culpa sit fugit eius iure vel, rerum quam natus temporibus suscipit excepturi deleniti
-            similique error non. Voluptatibus provident magnam doloribus. </p>
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quibusdam, blanditiis nobis dicta deserunt
-            assumenda omnis impedit cum debitis unde pariatur quisquam quos possimus incidunt praesentium?</p>
-    </div>
-</div> {% endblock %}
+</div>
+ {% endblock %}
