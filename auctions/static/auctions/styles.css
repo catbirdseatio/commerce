@@ -25,6 +25,6 @@ main {
     object-fit: cover;
 }
 
-.card-text {
+.listings-card-text {
     height: 3rem;
 }

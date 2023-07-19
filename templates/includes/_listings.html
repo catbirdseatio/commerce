@@ -10,7 +10,7 @@
       {% endif %}
       <div class="card-body">
         <h5 class="card-title text-center">{{ listing.title }}</h5>
-        <p class="card-text">{{ listing.description|truncatewords:15 }}</p>
+        <p class="card-text listings-card-text">{{ listing.description|truncatewords:15 }}</p>
       </div>
       <div class="d-grid m-2">
         <a href="{{ listing.get_absolute_url }}" class="btn btn-primary btn-block">Learn More</a>
