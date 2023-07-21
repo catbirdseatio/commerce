@@ -60,7 +60,6 @@ class Listing(models.Model):
     slug = AutoSlugField(populate_from='title')
     description = models.TextField()
     seller = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name="+")
-    bids = models.ManyToManyField(get_user_model(), through="Bid")
     starting_bid = models.DecimalField(max_digits=8, decimal_places=2)
     profile_image = models.ImageField(upload_to=path_and_rename, blank=True, null=True)
     is_active = models.BooleanField(default=True)
@@ -75,6 +74,10 @@ class Listing(models.Model):
     # Timestamps
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    
+    # Many To Many Fields
+    bids = models.ManyToManyField(get_user_model(), through="Bid")
+
     
     # Managers
     objects = models.Manager()
@@ -97,6 +100,7 @@ class Listing(models.Model):
     @property
     def current_price(self):
         bids = Bid.objects.prefetch_related("listing").filter(listing_id=self.pk)
+        print(self.bids.all())
 
         if bids.count() > 0:
             return bids.latest().bid_price

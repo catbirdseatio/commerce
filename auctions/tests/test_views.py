@@ -101,11 +101,11 @@ class TestIndexView:
             ListingFactory(is_active=False)
         
         for i in range(5):
-            ListingFactory()
+            ListingFactory(is_active=True)
 
         response = client.get(self.url)
         assert response.status_code == 200
-        assert len(response.context['listings']) == 4
+        assert len(response.context['listings']) == 5
 
 class TestCreateView:
     url = reverse("create")
