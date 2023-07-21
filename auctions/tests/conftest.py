@@ -3,6 +3,7 @@ from io import BytesIO
 from PIL import Image as img
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.contrib.auth import get_user_model
+from selenium import webdriver
 
 from auctions.tests.factories import CategoryFactory, UserFactory, ListingFactory, BidFactory
 
@@ -15,7 +16,6 @@ def media_storage(settings, tmpdir):
 @pytest.fixture(scope="function")
 def test_django_file():
     image = SimpleUploadedFile("test.jpeg", b"000000", content_type="image/jpeg")
-    # client.post(url, {'image_field_name': test_django_file})
     yield image
 
 
@@ -53,3 +53,30 @@ def imageless_listing():
 @pytest.fixture
 def testing_bid():
     return BidFactory()
+
+
+# Selenium fixtures
+@pytest.fixture(scope='module')
+def browser(request):
+    options = webdriver.ChromeOptions()
+    options.add_argument("--headless")
+    driver = webdriver.Chrome(options=options)
+    
+    yield driver
+    
+    driver.quit()
+
+@pytest.fixture
+def authenticated_browser(browser, client, live_server, test_user):
+    client.force_login(test_user)
+    cookie = client.cookies['sessionid']
+    browser.get(live_server.url)
+    browser.add_cookie({
+        'name': 'sessionid',
+        'value': cookie.value,
+        'secure': False,
+        'path': '/'
+    })
+    browser.refresh()
+    
+    return browser
