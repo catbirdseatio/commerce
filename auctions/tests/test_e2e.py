@@ -2,6 +2,7 @@ from django.urls import reverse
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.select import Select
 
+
 class TestCreateListingE2E:
     def test_form_submission_no_image(self, live_server, authenticated_browser, test_category, valid_image):
         authenticated_browser.get(f"{live_server.url}{reverse('create')}")
