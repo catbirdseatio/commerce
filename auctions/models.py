@@ -20,6 +20,11 @@ def path_and_rename(instance, filename):
     return os.path.join(upload_to, filename)
 
 
+class ActiveListingManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(is_active=True)
+
+
 class User(AbstractUser):
     pass
 
@@ -66,8 +71,14 @@ class Listing(models.Model):
         blank=True,
         null=True,
     )
+    
+    # Timestamps
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    
+    # Managers
+    objects = models.Manager()
+    active = ActiveListingManager()
 
     def img_preview(self):
         if self.profile_image:

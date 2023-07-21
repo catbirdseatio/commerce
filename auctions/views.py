@@ -14,7 +14,7 @@ from auctions.models import Listing, Bid
 
 class IndexView(View):
     def get(self, request):
-        listings = Listing.objects.all()
+        listings = Listing.active.all()
         return render(request, "auctions/index.html", {"listings": listings})
 
 

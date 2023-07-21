@@ -3,6 +3,7 @@ from django.urls import reverse
 from django.contrib.auth import get_user_model
 from pytest_django.asserts import assertTemplateUsed
 from auctions.models import Listing
+from auctions.tests.factories import ListingFactory
 
 
 pytestmark = pytest.mark.django_db
@@ -94,7 +95,17 @@ class TestIndexView:
     def test_cannot_post(self, client):
         response = client.post(self.url, {})
         assert response.status_code == 405
+    
+    def test_show_only_active_listings(self, client):
+        for i in range(5):
+            ListingFactory(is_active=False)
+        
+        for i in range(5):
+            ListingFactory()
 
+        response = client.get(self.url)
+        assert response.status_code == 200
+        assert len(response.context['listings']) == 4
 
 class TestCreateView:
     url = reverse("create")
