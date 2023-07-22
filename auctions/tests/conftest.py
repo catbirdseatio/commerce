@@ -5,7 +5,12 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.contrib.auth import get_user_model
 from selenium import webdriver
 
-from auctions.tests.factories import CategoryFactory, UserFactory, ListingFactory, BidFactory
+from auctions.tests.factories import (
+    CategoryFactory,
+    UserFactory,
+    ListingFactory,
+    BidFactory,
+)
 
 
 @pytest.fixture(autouse=True)
@@ -23,12 +28,11 @@ def test_django_file():
 def valid_image():
     """Helper to for creating test image for view tests."""
     image_file = BytesIO()
-    image = img.new('RGBA', size=(50, 50), color=(155, 0, 0))
-    image.save(image_file, 'png')
-    image_file.name = 'test_image.png'
+    image = img.new("RGBA", size=(50, 50), color=(155, 0, 0))
+    image.save(image_file, "png")
+    image_file.name = "test_image.png"
     image_file.seek(0)
     return image_file
-
 
 
 @pytest.fixture
@@ -43,12 +47,17 @@ def test_category():
 
 @pytest.fixture
 def test_listing():
-    return ListingFactory()
+    return ListingFactory(is_active=True)
+
+@pytest.fixture
+def test_inactive_listing():
+    return ListingFactory(is_active=False)
 
 
 @pytest.fixture
 def imageless_listing():
-    return ListingFactory(profile_image=None)
+    return ListingFactory(is_active=True, profile_image=None)
+
 
 @pytest.fixture
 def testing_bid():
@@ -56,27 +65,25 @@ def testing_bid():
 
 
 # Selenium fixtures
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def browser(request):
     options = webdriver.ChromeOptions()
     options.add_argument("--headless")
     driver = webdriver.Chrome(options=options)
-    
+
     yield driver
-    
+
     driver.quit()
+
 
 @pytest.fixture
 def authenticated_browser(browser, client, live_server, test_user):
     client.force_login(test_user)
-    cookie = client.cookies['sessionid']
+    cookie = client.cookies["sessionid"]
     browser.get(live_server.url)
-    browser.add_cookie({
-        'name': 'sessionid',
-        'value': cookie.value,
-        'secure': False,
-        'path': '/'
-    })
+    browser.add_cookie(
+        {"name": "sessionid", "value": cookie.value, "secure": False, "path": "/"}
+    )
     browser.refresh()
-    
+
     return browser

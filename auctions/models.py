@@ -20,8 +20,8 @@ def path_and_rename(instance, filename):
     return os.path.join(upload_to, filename)
 
 
-class ActiveListingManager(models.Manager):
-    def get_queryset(self):
+class ListingManager(models.Manager):
+    def get_active(self):
         return super().get_queryset().filter(is_active=True)
 
 
@@ -33,11 +33,11 @@ class User(AbstractUser):
 
 
 class Bid(models.Model):
-    user = models.ForeignKey("User", on_delete=models.CASCADE)
-    listing = models.ForeignKey("Listing", on_delete=models.CASCADE)
+    user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="bids")
+    listing = models.ForeignKey("Listing", on_delete=models.CASCADE, related_name="bids")
     bid_price = models.DecimalField(max_digits=8, decimal_places=2)
     created_at = models.DateTimeField(auto_now_add=True)
-    
+
     class Meta:
         get_latest_by = ["bid_price"]
 
@@ -55,11 +55,13 @@ class Category(models.Model):
         return self.title
 
 
-class Listing(models.Model): 
+class Listing(models.Model):
     title = models.CharField(max_length=128)
-    slug = AutoSlugField(populate_from='title')
+    slug = AutoSlugField(populate_from="title")
     description = models.TextField()
-    seller = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name="+")
+    seller = models.ForeignKey(
+        get_user_model(), on_delete=models.CASCADE, related_name="+"
+    )
     starting_bid = models.DecimalField(max_digits=8, decimal_places=2)
     profile_image = models.ImageField(upload_to=path_and_rename, blank=True, null=True)
     is_active = models.BooleanField(default=True)
@@ -70,47 +72,50 @@ class Listing(models.Model):
         blank=True,
         null=True,
     )
-    
+
     # Timestamps
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
-    # Many To Many Fields
-    bids = models.ManyToManyField(get_user_model(), through="Bid")
 
-    
+    # Many To Many Fields
+    watchlist = models.ManyToManyField("User", related_name="watchlist")
+
     # Managers
-    objects = models.Manager()
-    active = ActiveListingManager()
+    objects = ListingManager()
 
     def img_preview(self):
         if self.profile_image:
             return mark_safe(f'<img src="{self.profile_image.url}" width="150" />')
         return None
-    
+
     def slugify_function(self, content):
-        return content.translate({ord(c): '-' for c in string.whitespace}).lower()
+        return content.translate({ord(c): "-" for c in string.whitespace}).lower()
+
+    def bid_queryset(self):
+        return self.bids.filter(listing_id=self.pk)
 
     @property
     def number_of_bids(self):
-        return (
-            Bid.objects.prefetch_related("listing").filter(listing_id=self.pk).count()
-        )
-    
+        return self.bid_queryset().count()
+
+    @property
+    def high_bid(self):
+        try:
+            return self.bid_queryset().select_related("user").latest()
+        except Bid.DoesNotExist:
+            return None
+
     @property
     def current_price(self):
-        bids = Bid.objects.prefetch_related("listing").filter(listing_id=self.pk)
-        print(self.bids.all())
+        if self.number_of_bids > 0:
+            return self.bids.latest().bid_price
 
-        if bids.count() > 0:
-            return bids.latest().bid_price
-        
         else:
             return self.starting_bid
 
+
     def __str__(self):
         return self.title
-    
+
     def get_absolute_url(self):
         return reverse("detail", kwargs={"slug": self.slug})
-    

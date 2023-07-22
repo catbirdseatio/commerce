@@ -8,8 +8,9 @@
       {% else %}
         <img src="{% static 'auctions/default.png' %}" alt="{{ listing.title }}" class="card-img-top">
       {% endif %}
-      <div class="card-body">
-        <h5 class="card-title text-center">{{ listing.title }}</h5>
+      <div class="card-body text-center">
+        <h5 class="card-title">{{ listing.title }}</h5>
+        <p class="text-bold">Current price: ${{ listing.current_price }}</p>
         <p class="card-text listings-card-text">{{ listing.description|truncatewords:15 }}</p>
       </div>
       <div class="d-grid m-2">

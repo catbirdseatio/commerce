@@ -1,0 +1,20 @@
+{% load crispy_forms_tags %} 
+<div class="card text-center">
+    <img class="card-img-top" src="{{ listing.profile_image.url }}" alt="Card image cap">
+    <div class="card-body">
+        <h5 class="card-title text-center">Bid</h5>
+        <div class="m-0">
+            <p>The auction is over.</p>
+            {% with listing.high_bid as bid %}
+                {% if bid.user == user %}
+                    <p><strong>You have won the auction.</strong></p>
+                {% else %}
+                    <p>{{ bid.user }} has won the auction.</p>
+                {% endif %}
+            {% endwith %}
+        </div>
+    </div>
+    <div class="card-body">
+        <p>This auction has ended.</p>
+    </div>
+</div>

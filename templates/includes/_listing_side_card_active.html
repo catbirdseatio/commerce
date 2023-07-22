@@ -1,0 +1,46 @@
+{% load crispy_forms_tags %}
+{% load static %}
+<div class="card text-center">
+    {% if listing.profile_image %}
+        <img class="card-img-top" src="{{ listing.profile_image.url }}" alt="Card image cap">
+    {% else %}
+        <img class="card-img-top" src="{% static 'auctions/default.png' %}" alt="Card image cap">
+    {% endif %}
+    <div class="card-body">
+        <h5 class="card-title text-center">Bid</h5>
+        <div class="m-0">
+            {% if listing.high_bid %}
+                {% with listing.high_bid as bid %}
+                    <p>There {{ listing.number_of_bids|pluralize:"is,are" }} {{ listing.number_of_bids }} bid{{ listing.number_of_bids|pluralize}}.</p>
+                    {% if bid.user == user %}
+                        <p>You are the high bidder.</p>
+                    {% else %}
+                        <p>{{ bid.user }} is the high bidder.</p>
+                    {% endif %}
+                {% endwith %}
+            {% else %}
+                <p>There are no bids.</p>
+            {% endif %}
+        </div>
+    </div>
+    <div class="card-body">
+        {% if user.is_authenticated %}
+            <form method="post">
+                {% csrf_token %}
+                {{ form|crispy}}
+                <div class="d-grid mb-2">
+                    <button type="submit" class="btn btn-primary btn-block">Place Bid</button>
+                </div>
+            </form>
+            <div class="d-grid">
+                {% if listing in request.user.watchlist.all %}
+                <button class="btn btn-primary btn-block">Remove from Watchlist</button>
+                {% else %}
+                <button class="btn btn-warning btn-block">Add to Watchlist</button>
+                {% endif %}
+            </div>
+        {% else %}
+            <p>Log in to place bid.</p>
+        {% endif %}
+    </div>
+</div>

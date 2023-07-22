@@ -35,14 +35,20 @@ class LoginForm(forms.Form):
 class ListingForm(forms.ModelForm):
     class Meta:
         model = Listing
-        fields = ("title", "description", "starting_bid", "profile_image", "category",)
-    
+        fields = (
+            "title",
+            "description",
+            "starting_bid",
+            "profile_image",
+            "category",
+        )
+
     def clean_starting_bid(self):
         data = self.cleaned_data["starting_bid"]
-        if data < .01:
+        if data < 0.01:
             forms.ValidationError("Starting bid must be more than .01")
         return data
-    
+
 
 class BidForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -51,25 +57,27 @@ class BidForm(forms.ModelForm):
         self.user = kwargs.pop("user")
 
         super().__init__(*args, **kwargs)
-    
+
     class Meta:
         model = Bid
         fields = ("bid_price",)
-    
+
     def clean_bid_price(self):
         data = self.cleaned_data.get("bid_price")
         if self.listing.number_of_bids > 0 and data <= self.listing.current_price:
             raise forms.ValidationError("Bid price must exceed current price")
         elif data < self.listing.current_price:
-            raise forms.ValidationError("Bid must be greater than or equal to starting bid.")
-        
+            raise forms.ValidationError(
+                "Bid must be greater than or equal to starting bid."
+            )
+
         return data
-        
+
     def save(self, commit=True):
         instance = super().save(commit=False)
         instance.user = self.user
         instance.listing = self.listing
-        
+
         if commit:
             instance.save()
         return instance
