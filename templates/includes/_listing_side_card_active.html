@@ -36,9 +36,9 @@
             </form>
             <div class="d-grid">
                 {% if listing in request.user.watchlist.all %}
-                <button class="btn btn-primary btn-block">Remove from Watchlist</button>
+                <button class="btn btn-primary btn-block" data-action="remove" id="watchlist-button">Remove from Watchlist</button>
                 {% else %}
-                <button class="btn btn-warning btn-block">Add to Watchlist</button>
+                <button class="btn btn-warning btn-block" data-action="add" id="watchlist-button">Add to Watchlist</button>
                 {% endif %}
             </div>
         {% else %}
