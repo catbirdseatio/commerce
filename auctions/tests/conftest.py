@@ -49,6 +49,7 @@ def test_category():
 def test_listing():
     return ListingFactory(is_active=True)
 
+
 @pytest.fixture
 def test_inactive_listing():
     return ListingFactory(is_active=False)

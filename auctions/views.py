@@ -1,7 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import  HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse, reverse_lazy
 from django.views.generic.edit import CreateView
@@ -41,7 +41,7 @@ class DetailListingView(View):
     form_class = BidForm
 
     def get(self, request, slug):
-        listing = Listing.objects.get(slug=slug)
+        listing = Listing.objects.prefetch_related("seller").get(slug=slug)
         context = {"listing": listing}
 
         if request.user.is_authenticated:

@@ -9,18 +9,20 @@
     <div class="card-body">
         <h5 class="card-title text-center">Bid</h5>
         <div class="m-0">
-            {% if listing.high_bid %}
                 {% with listing.high_bid as bid %}
-                    <p>There {{ listing.number_of_bids|pluralize:"is,are" }} {{ listing.number_of_bids }} bid{{ listing.number_of_bids|pluralize}}.</p>
-                    {% if bid.user == user %}
-                        <p>You are the high bidder.</p>
+                    {% if bid %}
+                        {% with listing.number_of_bids as bids %}
+                        <p>There {{ bids|pluralize:"is,are" }} {{ bids }} bid{{ bids|pluralize}}.</p>
+                        {% endwith %}
+                        {% if bid.user == user %}
+                            <p>You are the high bidder.</p>
+                        {% else %}
+                            <p>{{ bid.user }} is the high bidder.</p>
+                        {% endif %}
                     {% else %}
-                        <p>{{ bid.user }} is the high bidder.</p>
+                        <p>There are no bids.</p>
                     {% endif %}
                 {% endwith %}
-            {% else %}
-                <p>There are no bids.</p>
-            {% endif %}
         </div>
     </div>
     <div class="card-body">

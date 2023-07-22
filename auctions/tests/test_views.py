@@ -74,6 +74,25 @@ class TestLoginView:
         data = {"username": "rodney", "password": "Password"}
         response = client.post(self.url, data)
         assert b"Invalid username and/or password." in response.content
+        
+    def test_waitlist_link_is_not_zero(self, test_user, test_listing, client):
+        test_listing.watchlist.add(test_user)
+        
+        data = {
+            "username": test_user.username,
+            "password": "Testpass123",
+        }
+        response = client.post(self.url, data, follow=True)
+        assert b'Watchlist <span class="badge rounded-pill bg-secondary">1</span>' in response.content
+    
+    def test_waitlist_link_is_zero(self, test_user, client):        
+        data = {
+            "username": test_user.username,
+            "password": "Testpass123",
+        }
+        response = client.post(self.url, data, follow=True)
+        assert b'Watchlist <span class="badge rounded-pill bg-secondary">0</span>' in response.content
+
 
 
 class TestIndexView:
@@ -163,32 +182,41 @@ class TestDetailView:
     def test_can_get(self, client, test_listing):
         response = client.get(test_listing.get_absolute_url())
         assert response.status_code == 200
-    
+
     def test_template_used(self, client, test_listing):
         response = client.get(test_listing.get_absolute_url())
         assertTemplateUsed(response, "auctions/detail.html")
-    
+
     def test_display_high_bidder(self, client, test_listing):
         testing_bid = BidFactory(listing=test_listing)
         response = client.get(testing_bid.listing.get_absolute_url())
         assert bytes(f"There is 1 bid.", encoding="UTF-8") in response.content
-        assert bytes(f"{testing_bid.user} is the high bidder.", encoding="UTF-8") in response.content
-    
-    def test_display_authenticated_user_is_high_bidder(self, client, test_listing, test_user):
+        assert (
+            bytes(f"{testing_bid.user} is the high bidder.", encoding="UTF-8")
+            in response.content
+        )
+
+    def test_display_authenticated_user_is_high_bidder(
+        self, client, test_listing, test_user
+    ):
         testing_bid = BidFactory(listing=test_listing, user=test_user)
         client.force_login(test_user)
         response = client.get(testing_bid.listing.get_absolute_url())
         assert bytes(f"There is 1 bid.", encoding="UTF-8") in response.content
         assert bytes(f"You are the high bidder.", encoding="UTF-8") in response.content
-    
+
     def test_display_high_bidder_inactive(self, client, test_inactive_listing):
         testing_bid = BidFactory(listing=test_inactive_listing)
         response = client.get(testing_bid.listing.get_absolute_url())
         assert bytes(f"The auction is over.", encoding="UTF-8") in response.content
-        assert bytes(f"{testing_bid.user} has won the auction.", encoding="UTF-8") in response.content
+        assert (
+            bytes(f"{testing_bid.user} has won the auction.", encoding="UTF-8")
+            in response.content
+        )
 
-    
-    def test_display_user_is_high_bidder_inactive(self, client, test_inactive_listing, test_user):
+    def test_display_user_is_high_bidder_inactive(
+        self, client, test_inactive_listing, test_user
+    ):
         testing_bid = BidFactory(listing=test_inactive_listing, user=test_user)
         client.force_login(test_user)
         response = client.get(testing_bid.listing.get_absolute_url())

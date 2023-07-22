@@ -34,7 +34,9 @@ class User(AbstractUser):
 
 class Bid(models.Model):
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="bids")
-    listing = models.ForeignKey("Listing", on_delete=models.CASCADE, related_name="bids")
+    listing = models.ForeignKey(
+        "Listing", on_delete=models.CASCADE, related_name="bids"
+    )
     bid_price = models.DecimalField(max_digits=8, decimal_places=2)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -107,12 +109,10 @@ class Listing(models.Model):
 
     @property
     def current_price(self):
-        if self.number_of_bids > 0:
+        try:
             return self.bids.latest().bid_price
-
-        else:
+        except Bid.DoesNotExist:
             return self.starting_bid
-
 
     def __str__(self):
         return self.title
