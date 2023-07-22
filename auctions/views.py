@@ -17,6 +17,12 @@ class IndexView(View):
         return render(request, "auctions/index.html", {"listings": listings})
 
 
+class WatchlistView(LoginRequiredMixin, View):
+    def get(self, request):
+        listings = request.user.watchlist.all()
+        return render(request, "auctions/watchlist.html", {"listings": listings})
+
+
 class CreateListingView(LoginRequiredMixin, View):
     form_class = ListingForm
     login_url = reverse_lazy("login")

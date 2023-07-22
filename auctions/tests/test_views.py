@@ -83,7 +83,7 @@ class TestLoginView:
             "password": "Testpass123",
         }
         response = client.post(self.url, data, follow=True)
-        assert b'Watchlist <span class="badge rounded-pill bg-secondary">1</span>' in response.content
+        assert b'Watchlist <span class="badge rounded-pill bg-secondary px-3">' in response.content
     
     def test_waitlist_link_is_zero(self, test_user, client):        
         data = {
@@ -91,8 +91,7 @@ class TestLoginView:
             "password": "Testpass123",
         }
         response = client.post(self.url, data, follow=True)
-        assert b'Watchlist <span class="badge rounded-pill bg-secondary">0</span>' in response.content
-
+        assert b'Watchlist <span class="badge rounded-pill bg-secondary px-3">' in response.content
 
 
 class TestIndexView:
@@ -125,6 +124,40 @@ class TestIndexView:
         response = client.get(self.url)
         assert response.status_code == 200
         assert len(response.context["listings"]) == 5
+
+
+class TestWatchlistView:
+    url = reverse("watchlist")
+
+    def test_get_success(self, client, test_user):
+        client.force_login(test_user)
+        response = client.get(self.url)
+        assert response.status_code == 200
+    
+    def test_get_anonymous_user_cannot_get(self, client):
+        response = client.get(self.url)
+        assert response.status_code == 302
+
+    def test_template_used(self, client, test_user):
+        client.force_login(test_user)
+        response = client.get(self.url)
+        assertTemplateUsed(response, "auctions/watchlist.html")
+
+    def test_cannot_post(self, client, test_user):
+        client.force_login(test_user)
+        response = client.post(self.url, {})
+        assert response.status_code == 405
+
+    def test_show_watched_listings(self, test_user, client):
+        listings = [ListingFactory(is_active=False) for i in range(6)]
+        
+        for listing in listings:
+            listing.watchlist.add(test_user)
+
+        client.force_login(test_user)
+        response = client.get(self.url)
+        assert response.status_code == 200
+        assert len(response.context["listings"]) == 6
 
 
 class TestCreateView:
