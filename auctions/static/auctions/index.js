@@ -1,10 +1,3 @@
-const MESSAGE_DIV = (message) => `<div class="messages ">
-    <div class="alert alert-${message.tags}} alert-dismissible fade show" role="alert">
-      ${message.text}
-      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-</div>`;
-
 const getCookie = (name) => {
   /**  Retrieve a cookie by name. */
   let cookieValue = null;
@@ -62,6 +55,9 @@ const badgeUIAction = (badge, action) => {
 };
 
 const messageUIAction = (main, message, tags = "info") => {
+/** Add an alert message to the UI **/
+
+  // Remove old messages if there are any
   const oldMessages = document.querySelector(".messages");
   if (oldMessages) oldMessages.remove();
 

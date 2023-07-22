@@ -1,3 +1,4 @@
+import json
 import pytest
 from django.urls import reverse
 from django.contrib.auth import get_user_model
@@ -158,6 +159,19 @@ class TestWatchlistView:
         response = client.get(self.url)
         assert response.status_code == 200
         assert len(response.context["listings"]) == 6
+
+
+# class TestWatchlistAPIView:
+#     def url(self, pk):
+#         return reverse("watchlist_api", args=[pk])
+    
+#     def test_user_can_watch(self, client, test_user, test_listing):
+#         url = self.url(test_listing.pk)
+#         client.force_login(test_user)
+#         response = client.post(url, data={})
+#         # print(response.content)
+#         assert True
+        
 
 
 class TestCreateView:

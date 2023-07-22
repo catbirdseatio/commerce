@@ -1,7 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse, reverse_lazy
 from django.views.generic.edit import CreateView
@@ -21,6 +21,18 @@ class WatchlistView(LoginRequiredMixin, View):
     def get(self, request):
         listings = request.user.watchlist.all()
         return render(request, "auctions/watchlist.html", {"listings": listings})
+
+
+class WatchlistAPIView(LoginRequiredMixin, View):
+    def post(self, request, pk):
+        listing = Listing.objects.get(pk)
+        listing.watchlist.add(request.user)
+        return JsonResponse({"message": "Item added to watchlist!"})
+    
+    def delete(self, request, id):
+        listing = Listing.objects.get(id)
+        listing.watchlist.remove(request.user)
+        return JsonResponse({"message": "Item removed to watchlist!"})
 
 
 class CreateListingView(LoginRequiredMixin, View):
