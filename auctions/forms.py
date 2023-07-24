@@ -51,6 +51,8 @@ class ListingForm(forms.ModelForm):
 
 
 class BidForm(forms.ModelForm):
+    form = forms.BooleanField(widget=forms.HiddenInput, initial=True)
+
     def __init__(self, *args, **kwargs):
         """Add user and listing to the form instance."""
         self.listing = kwargs.pop("listing")
@@ -84,7 +86,9 @@ class BidForm(forms.ModelForm):
 
 
 class CommentForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
+    comment_form = forms.BooleanField(widget=forms.HiddenInput, initial=True)
+    
+    def __init__(self, *args, **kwargs):        
         """Add user and listing to the form instance."""
         self.listing = kwargs.pop("listing")
         self.user = kwargs.pop("user")

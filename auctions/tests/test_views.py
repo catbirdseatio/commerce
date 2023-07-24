@@ -1,4 +1,4 @@
-import json
+import decimal
 import pytest
 from django.urls import reverse
 from django.contrib.auth import get_user_model
@@ -161,16 +161,17 @@ class TestWatchlistView:
         assert len(response.context["listings"]) == 6
 
 
-# class TestWatchlistAPIView:
-#     def url(self, pk):
-#         return reverse("watchlist_api", args=[pk])
+class TestWatchlistAPIView:
+    def url(self, pk):
+        return reverse("watchlist_api", args=[pk])
     
-#     def test_user_can_watch(self, client, test_user, test_listing):
-#         url = self.url(test_listing.pk)
-#         client.force_login(test_user)
-#         response = client.post(url, data={})
-#         # print(response.content)
-#         assert True
+    def test_user_can_watch(self, client, test_user, test_listing):
+        url = self.url(test_listing.pk)
+        print(url)
+        # client.force_login(test_user)
+        # response = client.post(url, {})
+        # print(response.content)
+        assert True
         
 
 
@@ -269,3 +270,22 @@ class TestDetailView:
         response = client.get(testing_bid.listing.get_absolute_url())
         assert bytes(f"The auction is over.", encoding="UTF-8") in response.content
         assert bytes(f"You have won the auction.", encoding="UTF-8") in response.content
+
+    def test_add_bid(self, client, test_user, test_listing):
+        testing_bid = BidFactory(listing=test_listing)
+        client.force_login(test_user)
+        
+        # Precision of decimals must be set locally
+        with decimal.localcontext() as c:
+            c.prec = 2
+            bid_price = testing_bid.bid_price + decimal.Decimal(.01)
+            response = client.post(testing_bid.listing.get_absolute_url(), data={'bid_price': bid_price, 'form': True}, follow=True)
+            
+            assert b"You are the high bidder!" in response.content
+            assert test_listing.current_price == bid_price
+        
+    
+    def test_add_comment(self, client, test_user, test_listing):
+        client.force_login(test_user)
+        response = client.post(test_listing.get_absolute_url(), data={'content': "Hello There", 'comment_form': True})
+        assert b"Your comment has been added!" in response.content

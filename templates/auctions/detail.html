@@ -33,13 +33,15 @@
     <div class="row">
         <div class="comments col-md-12 offset-lg-4 col-lg-8">
             <h2 class="text-center">Comments</h2>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Eligendi perspiciatis consectetur sed sapiente
-                eaque, blanditiis rem nesciunt placeat. Ex unde quos obcaecati dicta voluptas sunt distinctio cupiditate
-                tenetur quis adipisci culpa sit fugit eius iure vel, rerum quam natus temporibus suscipit excepturi deleniti
-                similique error non. Voluptatibus provident magnam doloribus. </p>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quibusdam, blanditiis nobis dicta deserunt
-                assumenda omnis impedit cum debitis unde pariatur quisquam quos possimus incidunt praesentium?</p>
-        </div>
+            <form method="post">
+                {% csrf_token %}
+                {{ comment_form|crispy }}
+                <button type="submit" class="btn btn-primary">Add Comment</button>
+            </form>
+            {% for comment in listing.comments.all %}
+                <p>{{ comment.content }}</p>
+            {% endfor %}
+           </div>
     </div>
 </div>
  {% endblock %}
