@@ -119,3 +119,20 @@ class Listing(models.Model):
 
     def get_absolute_url(self):
         return reverse("detail", kwargs={"slug": self.slug})
+
+
+class Comment(models.Model):
+    user = models.ForeignKey("User", on_delete=models.CASCADE)
+    listing = models.ForeignKey("Listing", on_delete=models.CASCADE)
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    def __str__(self):
+        if len(self.content) > 15:
+            return f"{self.content[:15]}..."
+        return self.content
+
+    def get_absolute_url(self):
+        return reverse("Comment_detail", kwargs={"pk": self.pk})
+
