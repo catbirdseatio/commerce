@@ -7,7 +7,7 @@ from selenium.webdriver.support import expected_conditions as EC
 
 class TestCreateListingE2E:
     def test_form_submission_no_image(
-        self, live_server, authenticated_browser, test_category, valid_image
+        self, live_server, authenticated_browser, test_category
     ):
         authenticated_browser.get(f"{live_server.url}{reverse('create')}")
 
@@ -20,7 +20,7 @@ class TestCreateListingE2E:
 
         title.send_keys("An Item")
         description.send_keys("lorem ipsum de facto.")
-        starting_bid.send_keys(".01")
+        starting_bid.send_keys(".02")
         select_category.select_by_index(0)
         submit.submit()
 

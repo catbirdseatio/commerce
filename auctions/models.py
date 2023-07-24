@@ -141,4 +141,4 @@ class Comment(models.Model):
         return self.content
 
     def get_absolute_url(self):
-        return reverse("Comment_detail", kwargs={"pk": self.pk})
+        return reverse("detail", kwargs={"slug": self.listing.slug})

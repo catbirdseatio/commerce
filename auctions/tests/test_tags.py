@@ -11,7 +11,7 @@ class TestCategoryTag:
     def test_five_categories_render(self):
         categories = [CategoryFactory() for _ in range(5)]
         template = Template("{% load category_tag %}{% show_categories %}<h1>Hello</h1>")
-        rendered =template.render(Context({'categories': categories}))
+        rendered =template.render(Context({}))
         
         for category in categories:
             assert category.title in rendered

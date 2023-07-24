@@ -32,5 +32,18 @@ class TestCommentForm:
         data = {"content": content, "comment_form": True}
         form = CommentForm(data, user=test_user, listing=test_listing)
         form.is_valid()
-        form.save()
+        instance = form.save()
         assert test_listing.comments.count() == 1
+        assert int(instance.pk)
+    
+    def test_save_no_commit(self, test_user, test_listing):
+        content = "".join(
+            random.choices(string.ascii_lowercase + string.digits, k=1000)
+        )
+        data = {"content": content, "comment_form": True}
+        form = CommentForm(data, user=test_user, listing=test_listing)
+        form.is_valid()
+        instance = form.save(commit=False)
+        assert test_listing.comments.count() == 0
+        assert instance is not None
+        assert instance.pk is None

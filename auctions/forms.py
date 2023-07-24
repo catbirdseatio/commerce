@@ -46,7 +46,7 @@ class ListingForm(forms.ModelForm):
     def clean_starting_bid(self):
         data = self.cleaned_data["starting_bid"]
         if data < 0.01:
-            forms.ValidationError("Starting bid must be more than .01")
+            raise forms.ValidationError("Starting bid must be more than .01")
         return data
 
 

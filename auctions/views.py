@@ -2,6 +2,8 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect, JsonResponse
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse, reverse_lazy
 from django.views.generic.edit import CreateView
@@ -82,27 +84,27 @@ class DetailListingView(View):
             )
         return render(request, "auctions/detail.html", context)
 
+    @method_decorator(login_required)
     def post(self, request, slug):
-        if request.user.is_authenticated:
-            listing = get_object_or_404(Listing, slug=slug)
-            context = {"listing": listing}
-            print(request.POST)
-            if "form" in request.POST:
-                form = BidForm(request.POST, listing=listing, user=request.user)
-                if form.is_valid():
-                    form.save()
-                    messages.success(request, "You are the high bidder!")
-                context["form"] = form
-            if "comment_form" in request.POST:
-                comment_form = CommentForm(
-                    request.POST, listing=listing, user=request.user
-                )
-                if comment_form.is_valid():
-                    comment_form.save()
-                    messages.success(request, "Your comment has been added!")
-                context["comment_form"] = comment_form
-            return render(request, "auctions/detail.html", context)
-        return HttpResponseRedirect(listing.get_absolute_url())
+        listing = get_object_or_404(Listing, slug=slug)
+        context = {"listing": listing}
+        form = BidForm(request.POST, listing=listing, user=request.user)
+        comment_form = CommentForm(
+                request.POST, listing=listing, user=request.user
+        )
+        if "form" in request.POST:
+            if form.is_valid():
+                form.save()
+                messages.success(request, "You are the high bidder!")
+                HttpResponseRedirect(reverse("detail", args=[listing.slug]))
+        if "comment_form" in request.POST:
+            if comment_form.is_valid():
+                comment_form.save()
+                messages.success(request, "Your comment has been added!")
+                HttpResponseRedirect(reverse("detail", args=[listing.slug]))
+        context["comment_form"] = comment_form
+        context["form"] = form
+        return render(request, "auctions/detail.html", context)
 
 
 class CategoryListView(View):
@@ -143,7 +145,7 @@ class LoginView(View):
                 )
 
 
-class LogoutView(View):
+class LogoutView(LoginRequiredMixin, View):
     def get(self, request):
         logout(request)
         messages.success(request, "You have been logged out.")
