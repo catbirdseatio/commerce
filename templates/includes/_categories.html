@@ -5,6 +5,8 @@
     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
         {% for category in categories %}
         <li><a class="dropdown-item" href="{{ category.get_absolute_url }}">{{ category.title }}</a></li>
+        {% empty %}
+        <li>There are no categories.</li>
         {% endfor %}
     </ul>
   </div>

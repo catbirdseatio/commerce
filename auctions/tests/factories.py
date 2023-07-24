@@ -22,6 +22,7 @@ class UserFactory(factory.django.DjangoModelFactory):
 
 class CategoryFactory(factory.django.DjangoModelFactory):
     title = factory.fuzzy.FuzzyText(length=25)
+    slug = factory.LazyAttribute(lambda obj: slugify(obj.title))
 
     class Meta:
         model = Category
