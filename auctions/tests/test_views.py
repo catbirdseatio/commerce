@@ -1,4 +1,6 @@
 import decimal
+import random
+import string
 import pytest
 from django.urls import reverse
 from django.contrib.auth import get_user_model
@@ -75,24 +77,30 @@ class TestLoginView:
         data = {"username": "rodney", "password": "Password"}
         response = client.post(self.url, data)
         assert b"Invalid username and/or password." in response.content
-        
+
     def test_waitlist_link_is_not_zero(self, test_user, test_listing, client):
         test_listing.watchlist.add(test_user)
-        
+
         data = {
             "username": test_user.username,
             "password": "Testpass123",
         }
         response = client.post(self.url, data, follow=True)
-        assert b'Watchlist <span class="badge rounded-pill bg-secondary px-3">' in response.content
-    
-    def test_waitlist_link_is_zero(self, test_user, client):        
+        assert (
+            b'Watchlist <span class="badge rounded-pill bg-secondary px-3">'
+            in response.content
+        )
+
+    def test_waitlist_link_is_zero(self, test_user, client):
         data = {
             "username": test_user.username,
             "password": "Testpass123",
         }
         response = client.post(self.url, data, follow=True)
-        assert b'Watchlist <span class="badge rounded-pill bg-secondary px-3">' in response.content
+        assert (
+            b'Watchlist <span class="badge rounded-pill bg-secondary px-3">'
+            in response.content
+        )
 
 
 class TestIndexView:
@@ -134,7 +142,7 @@ class TestWatchlistView:
         client.force_login(test_user)
         response = client.get(self.url)
         assert response.status_code == 200
-    
+
     def test_get_anonymous_user_cannot_get(self, client):
         response = client.get(self.url)
         assert response.status_code == 302
@@ -151,7 +159,7 @@ class TestWatchlistView:
 
     def test_show_watched_listings(self, test_user, client):
         listings = [ListingFactory(is_active=False) for i in range(6)]
-        
+
         for listing in listings:
             listing.watchlist.add(test_user)
 
@@ -164,15 +172,13 @@ class TestWatchlistView:
 class TestWatchlistAPIView:
     def url(self, pk):
         return reverse("watchlist_api", args=[pk])
-    
+
     def test_user_can_watch(self, client, test_user, test_listing):
         url = self.url(test_listing.pk)
-        print(url)
         # client.force_login(test_user)
         # response = client.post(url, {})
         # print(response.content)
         assert True
-        
 
 
 class TestCreateView:
@@ -271,21 +277,59 @@ class TestDetailView:
         assert bytes(f"The auction is over.", encoding="UTF-8") in response.content
         assert bytes(f"You have won the auction.", encoding="UTF-8") in response.content
 
-    def test_add_bid(self, client, test_user, test_listing):
+    def test_add_bid_success(self, client, test_user, test_listing):
         testing_bid = BidFactory(listing=test_listing)
+        bid_price = decimal.Decimal(
+            testing_bid.listing.current_price
+        ) + decimal.Decimal(1)
+
         client.force_login(test_user)
-        
-        # Precision of decimals must be set locally
-        with decimal.localcontext() as c:
-            c.prec = 2
-            bid_price = testing_bid.bid_price + decimal.Decimal(.01)
-            response = client.post(testing_bid.listing.get_absolute_url(), data={'bid_price': bid_price, 'form': True}, follow=True)
-            
-            assert b"You are the high bidder!" in response.content
-            assert test_listing.current_price == bid_price
-        
-    
-    def test_add_comment(self, client, test_user, test_listing):
+        response = client.post(
+            testing_bid.listing.get_absolute_url(),
+            data={"bid_price": bid_price, "form": True},
+            follow_redirect=True,
+        )
+        assert b"You are the high bidder!" in response.content
+        assert test_listing.current_price == bid_price
+
+    def test_add_bid_fail(self, client, test_user, test_listing):
+        testing_bid = BidFactory(listing=test_listing)
+        bid_price = testing_bid.listing.current_price
+
         client.force_login(test_user)
-        response = client.post(test_listing.get_absolute_url(), data={'content': "Hello There", 'comment_form': True})
+        response = client.post(
+            testing_bid.listing.get_absolute_url(),
+            data={"bid_price": bid_price, "form": True},
+            follow_redirect=True,
+        )
+        assert b"Bid price must exceed current price" in response.content
+
+    def test_add_bid_fail_new_listing(self, client, test_user, test_listing):
+        client.force_login(test_user)
+        bid_price = decimal.Decimal(test_listing.current_price) - decimal.Decimal(1)
+
+        response = client.post(
+            test_listing.get_absolute_url(),
+            data={"bid_price": bid_price, "form": True},
+            follow_redirect=True,
+        )
+        assert b"Bid must be greater than or equal to starting bid" in response.content
+
+    def test_add_comment_success(self, client, test_user, test_listing):
+        client.force_login(test_user)
+        response = client.post(
+            test_listing.get_absolute_url(),
+            data={"content": "Hello There", "comment_form": True},
+        )
         assert b"Your comment has been added!" in response.content
+
+    def test_add_comment_fail_too_long(self, client, test_user, test_listing):
+        content = "".join(
+            random.choices(string.ascii_uppercase + string.digits, k=1001)
+        )
+        client.force_login(test_user)
+        response = client.post(
+            test_listing.get_absolute_url(),
+            data={"content": content, "comment_form": True},
+        )
+        assert b"Content exceeds 1000 characters." in response.content

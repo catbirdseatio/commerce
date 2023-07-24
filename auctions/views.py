@@ -7,7 +7,13 @@ from django.urls import reverse, reverse_lazy
 from django.views.generic.edit import CreateView
 from django.views import View
 
-from auctions.forms import CustomUserCreationForm, LoginForm, ListingForm, BidForm, CommentForm
+from auctions.forms import (
+    CustomUserCreationForm,
+    LoginForm,
+    ListingForm,
+    BidForm,
+    CommentForm,
+)
 from auctions.models import Listing
 
 
@@ -29,11 +35,11 @@ class WatchlistAPIView(LoginRequiredMixin, View):
         print(listing)
         listing.watchlist.add(request.user)
         return JsonResponse({"message": "Item added to watchlist!"})
-    
+
     def delete(self, request, pk):
         listing = Listing.objects.get(pk)
         listing.watchlist.remove(request.user)
-        return JsonResponse({"message": "Item removed to watchlist!"})
+        return JsonResponse({"message": "Item removed from watchlist!"})
 
 
 class CreateListingView(LoginRequiredMixin, View):
@@ -61,12 +67,17 @@ class DetailListingView(View):
     comment_form_class = CommentForm
 
     def get(self, request, slug):
-        listing = get_object_or_404(Listing.objects.prefetch_related("seller").prefetch_related("comments"), slug=slug)
+        listing = get_object_or_404(
+            Listing.objects.prefetch_related("seller").prefetch_related("comments"),
+            slug=slug,
+        )
         context = {"listing": listing}
 
         if request.user.is_authenticated:
             context["form"] = self.form_class(listing=listing, user=request.user)
-            context["comment_form"] = self.comment_form_class(listing=listing, user=request.user)
+            context["comment_form"] = self.comment_form_class(
+                listing=listing, user=request.user
+            )
         return render(request, "auctions/detail.html", context)
 
     def post(self, request, slug):
@@ -74,23 +85,22 @@ class DetailListingView(View):
             listing = get_object_or_404(Listing, slug=slug)
             context = {"listing": listing}
             print(request.POST)
-            if 'form' in request.POST:
+            if "form" in request.POST:
                 form = BidForm(request.POST, listing=listing, user=request.user)
                 if form.is_valid():
                     form.save()
                     messages.success(request, "You are the high bidder!")
-                else:
-                    context["form"] = form
-            if 'comment_form' in request.POST:
-                comment_form = CommentForm(request.POST, listing=listing, user=request.user)
+                context["form"] = form
+            if "comment_form" in request.POST:
+                comment_form = CommentForm(
+                    request.POST, listing=listing, user=request.user
+                )
                 if comment_form.is_valid():
                     comment_form.save()
                     messages.success(request, "Your comment has been added!")
-                else:
-                    context["comment_form"] = comment_form
-
-                return render(request, "auctions/detail.html", context)
-            return HttpResponseRedirect(listing.get_absolute_url())
+                context["comment_form"] = comment_form
+            return render(request, "auctions/detail.html", context)
+        return HttpResponseRedirect(listing.get_absolute_url())
 
 
 class LoginView(View):

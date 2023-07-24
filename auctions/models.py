@@ -123,11 +123,13 @@ class Listing(models.Model):
 
 class Comment(models.Model):
     user = models.ForeignKey("User", on_delete=models.CASCADE)
-    listing = models.ForeignKey("Listing", on_delete=models.CASCADE, related_name="comments")
+    listing = models.ForeignKey(
+        "Listing", on_delete=models.CASCADE, related_name="comments"
+    )
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
+
     def __str__(self):
         if len(self.content) > 15:
             return f"{self.content[:15]}..."
@@ -135,4 +137,3 @@ class Comment(models.Model):
 
     def get_absolute_url(self):
         return reverse("Comment_detail", kwargs={"pk": self.pk})
-

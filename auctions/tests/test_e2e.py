@@ -47,50 +47,72 @@ class TestListingE2E:
         )
         assert "Log Out" in authenticated_browser.page_source
 
-    def test_add_watchlist_button_in_page(self, live_server, authenticated_browser, test_listing):
+    def test_add_watchlist_button_in_page(
+        self, live_server, authenticated_browser, test_listing
+    ):
         authenticated_browser.get(
             f"{live_server.url}/{test_listing.get_absolute_url()}"
         )
-        
-        add_watchlist_button = authenticated_browser.find_element(By.ID, 'watchlist-button')
+
+        add_watchlist_button = authenticated_browser.find_element(
+            By.ID, "watchlist-button"
+        )
         assert add_watchlist_button.text == "Add to Watchlist"
-    
-    def test_remove_watchlist_button_in_page(self, live_server, authenticated_browser, test_listing, test_user):
+
+    def test_remove_watchlist_button_in_page(
+        self, live_server, authenticated_browser, test_listing, test_user
+    ):
         test_listing.watchlist.add(test_user)
         authenticated_browser.get(
             f"{live_server.url}/{test_listing.get_absolute_url()}"
         )
-        
-        add_watchlist_button = authenticated_browser.find_element(By.ID,'watchlist-button')
+
+        add_watchlist_button = authenticated_browser.find_element(
+            By.ID, "watchlist-button"
+        )
         assert add_watchlist_button.text == "Remove from Watchlist"
-    
-    def test_add_watchlist_button_clicked_ui(self, live_server, authenticated_browser, test_listing):
+
+    def test_add_watchlist_button_clicked_ui(
+        self, live_server, authenticated_browser, test_listing
+    ):
         authenticated_browser.get(
             f"{live_server.url}/{test_listing.get_absolute_url()}"
         )
-        
-        add_watchlist_button = authenticated_browser.find_element(By.ID,
-            'watchlist-button')
-        watchlist_badge = authenticated_browser.find_element(By.CSS_SELECTOR, '#watchlist-link > .badge')
-        watchlist_badge_value = int(watchlist_badge.text)
-        
-        authenticated_browser.execute_script('arguments[0].click();', add_watchlist_button)
 
-        assert str(watchlist_badge_value + 1)  == watchlist_badge.text
+        add_watchlist_button = authenticated_browser.find_element(
+            By.ID, "watchlist-button"
+        )
+        watchlist_badge = authenticated_browser.find_element(
+            By.CSS_SELECTOR, "#watchlist-link > .badge"
+        )
+        watchlist_badge_value = int(watchlist_badge.text)
+
+        authenticated_browser.execute_script(
+            "arguments[0].click();", add_watchlist_button
+        )
+
+        assert str(watchlist_badge_value + 1) == watchlist_badge.text
         assert "Item added to watchlist!" in authenticated_browser.page_source
 
-    def test_remove_watchlist_button_clicked_ui(self, live_server, authenticated_browser, test_listing, test_user):
+    def test_remove_watchlist_button_clicked_ui(
+        self, live_server, authenticated_browser, test_listing, test_user
+    ):
         test_listing.watchlist.add(test_user)
         authenticated_browser.get(
             f"{live_server.url}/{test_listing.get_absolute_url()}"
         )
-        
-        add_watchlist_button = authenticated_browser.find_element(By.ID,
-            'watchlist-button')
-        watchlist_badge = authenticated_browser.find_element(By.CSS_SELECTOR, '#watchlist-link > .badge')
-        watchlist_badge_value = int(watchlist_badge.text)
-        
-        authenticated_browser.execute_script('arguments[0].click();', add_watchlist_button)
 
-        assert str(watchlist_badge_value - 1)  == watchlist_badge.text
+        add_watchlist_button = authenticated_browser.find_element(
+            By.ID, "watchlist-button"
+        )
+        watchlist_badge = authenticated_browser.find_element(
+            By.CSS_SELECTOR, "#watchlist-link > .badge"
+        )
+        watchlist_badge_value = int(watchlist_badge.text)
+
+        authenticated_browser.execute_script(
+            "arguments[0].click();", add_watchlist_button
+        )
+
+        assert str(watchlist_badge_value - 1) == watchlist_badge.text
         assert "Item removed watchlist!" in authenticated_browser.page_source

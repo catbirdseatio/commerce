@@ -70,7 +70,7 @@ class BidForm(forms.ModelForm):
             raise forms.ValidationError("Bid price must exceed current price")
         elif data < self.listing.current_price:
             raise forms.ValidationError(
-                "Bid must be greater than or equal to starting bid."
+                "Bid must be greater than or equal to starting bid"
             )
 
         return data
@@ -87,8 +87,8 @@ class BidForm(forms.ModelForm):
 
 class CommentForm(forms.ModelForm):
     comment_form = forms.BooleanField(widget=forms.HiddenInput, initial=True)
-    
-    def __init__(self, *args, **kwargs):        
+
+    def __init__(self, *args, **kwargs):
         """Add user and listing to the form instance."""
         self.listing = kwargs.pop("listing")
         self.user = kwargs.pop("user")
