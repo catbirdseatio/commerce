@@ -23,6 +23,7 @@
                         {{ listing.description|linebreaks }}
                         <p><strong>Current Price: ${{ listing.current_price }}</strong></p>
                         <p><strong>Seller:</strong> {{ listing.seller }}</p>
+                        <p><strong>Category:</strong><a href="{{ listing.category.get_absolute_url }}">{{ listing.category.title }}</a></p>
                         <p class="text-muted">Listed on {{ listing.created_at }}</p>
                     </div>
                 </div>
@@ -32,14 +33,23 @@
     </div>
     <div class="row">
         <div class="comments col-md-12 offset-lg-4 col-lg-8">
-            <h2 class="text-center">Comments</h2>
-            <form method="post">
+            <h2 class="text-center pt-3">Comments</h2>
+            <form method="post" class="mb-5">
                 {% csrf_token %}
                 {{ comment_form|crispy }}
                 <button type="submit" class="btn btn-primary">Add Comment</button>
             </form>
             {% for comment in listing.comments.all %}
-                <p>{{ comment.content }}</p>
+            <div class="card mb-2">
+                <div class="card-header">
+                  </div>
+                <div class="card-body">
+                  {{ comment.content }}
+                </div>
+                <div class="card-footer">
+                    Created by {{ comment.user }}  {{ comment.created_at }}
+                </div>
+              </div>
             {% endfor %}
            </div>
     </div>

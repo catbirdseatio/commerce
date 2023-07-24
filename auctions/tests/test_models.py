@@ -1,4 +1,3 @@
-import re
 import uuid
 import pytest
 from auctions.models import User, Category, Listing

@@ -14,7 +14,7 @@ from auctions.forms import (
     BidForm,
     CommentForm,
 )
-from auctions.models import Listing
+from auctions.models import Listing, Category
 
 
 class IndexView(View):
@@ -32,7 +32,6 @@ class WatchlistView(LoginRequiredMixin, View):
 class WatchlistAPIView(LoginRequiredMixin, View):
     def post(self, request, pk):
         listing = Listing.objects.get(pk)
-        print(listing)
         listing.watchlist.add(request.user)
         return JsonResponse({"message": "Item added to watchlist!"})
 
@@ -68,7 +67,7 @@ class DetailListingView(View):
 
     def get(self, request, slug):
         listing = get_object_or_404(
-            Listing.objects.prefetch_related("seller").prefetch_related("comments"),
+            Listing.objects.select_related("seller").select_related("category").prefetch_related("comments").prefetch_related("comments__user"),
             slug=slug,
         )
         context = {"listing": listing}
@@ -101,6 +100,14 @@ class DetailListingView(View):
                 context["comment_form"] = comment_form
             return render(request, "auctions/detail.html", context)
         return HttpResponseRedirect(listing.get_absolute_url())
+
+
+class CategoryListView(View):
+    def get(self, request, slug):
+        category = Category.objects.get(slug=slug)
+        listings = category.listings.all()
+        
+        return render(request, "auctions/category.html", {'category': category.title, 'listings': listings})
 
 
 class LoginView(View):

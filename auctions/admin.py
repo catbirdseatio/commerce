@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin
 
 from auctions.forms import CustomUserCreationForm, CustomUserChangeForm
-from auctions.models import Listing
+from auctions.models import Listing, Category
 
 
 User = get_user_model()
@@ -15,6 +15,13 @@ class UserAdmin(UserAdmin):
     form = CustomUserChangeForm
     model = User
     list_display = ["email", "username"]
+
+
+@admin.register(Category)
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ["title", "slug"]
+    
+
 
 
 @admin.register(Listing)

@@ -1,4 +1,3 @@
-from typing import Set
 import uuid
 import os
 import string
@@ -49,12 +48,17 @@ class Bid(models.Model):
 
 class Category(models.Model):
     title = models.CharField(max_length=64)
+    slug = AutoSlugField(populate_from="title")
 
     class Meta:
         verbose_name_plural = "categories"
 
     def __str__(self):
         return self.title
+    
+    def get_absolute_url(self):
+        return reverse("category", kwargs={"slug": self.slug})
+    
 
 
 class Listing(models.Model):
@@ -80,7 +84,7 @@ class Listing(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     # Many To Many Fields
-    watchlist = models.ManyToManyField("User", related_name="watchlist")
+    watchlist = models.ManyToManyField("User", related_name="watchlist", blank=True, null=True)
 
     # Managers
     objects = ListingManager()

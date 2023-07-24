@@ -1,7 +1,7 @@
-from typing import Any, Dict
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.contrib.auth import get_user_model
+
 
 from auctions.models import Listing, Bid, Comment
 
@@ -87,6 +87,7 @@ class BidForm(forms.ModelForm):
 
 class CommentForm(forms.ModelForm):
     comment_form = forms.BooleanField(widget=forms.HiddenInput, initial=True)
+    content = forms.CharField(label="", widget=forms.Textarea(attrs={"rows":5, "cols":20, 'style':'resize:none;'}))
 
     def __init__(self, *args, **kwargs):
         """Add user and listing to the form instance."""
