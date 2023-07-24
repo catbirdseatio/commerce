@@ -87,7 +87,10 @@ class BidForm(forms.ModelForm):
 
 class CommentForm(forms.ModelForm):
     comment_form = forms.BooleanField(widget=forms.HiddenInput, initial=True)
-    content = forms.CharField(label="", widget=forms.Textarea(attrs={"rows":5, "cols":20, 'style':'resize:none;'}))
+    content = forms.CharField(
+        label="",
+        widget=forms.Textarea(attrs={"rows": 5, "cols": 20, "style": "resize:none;"}),
+    )
 
     def __init__(self, *args, **kwargs):
         """Add user and listing to the form instance."""

@@ -55,10 +55,9 @@ class Category(models.Model):
 
     def __str__(self):
         return self.title
-    
+
     def get_absolute_url(self):
         return reverse("category", kwargs={"slug": self.slug})
-    
 
 
 class Listing(models.Model):
@@ -84,7 +83,9 @@ class Listing(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     # Many To Many Fields
-    watchlist = models.ManyToManyField("User", related_name="watchlist", blank=True, null=True)
+    watchlist = models.ManyToManyField(
+        "User", related_name="watchlist", blank=True, null=True
+    )
 
     # Managers
     objects = ListingManager()

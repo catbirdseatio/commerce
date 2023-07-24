@@ -67,7 +67,10 @@ class DetailListingView(View):
 
     def get(self, request, slug):
         listing = get_object_or_404(
-            Listing.objects.select_related("seller").select_related("category").prefetch_related("comments").prefetch_related("comments__user"),
+            Listing.objects.select_related("seller")
+            .select_related("category")
+            .prefetch_related("comments")
+            .prefetch_related("comments__user"),
             slug=slug,
         )
         context = {"listing": listing}
@@ -106,8 +109,12 @@ class CategoryListView(View):
     def get(self, request, slug):
         category = Category.objects.get(slug=slug)
         listings = category.listings.all()
-        
-        return render(request, "auctions/category.html", {'category': category.title, 'listings': listings})
+
+        return render(
+            request,
+            "auctions/category.html",
+            {"category": category.title, "listings": listings},
+        )
 
 
 class LoginView(View):
