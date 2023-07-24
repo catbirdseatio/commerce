@@ -96,12 +96,12 @@ class DetailListingView(View):
             if form.is_valid():
                 form.save()
                 messages.success(request, "You are the high bidder!")
-                HttpResponseRedirect(reverse("detail", args=[listing.slug]))
+                return HttpResponseRedirect(reverse("detail", args=[listing.slug]))
         if "comment_form" in request.POST:
             if comment_form.is_valid():
                 comment_form.save()
                 messages.success(request, "Your comment has been added!")
-                HttpResponseRedirect(reverse("detail", args=[listing.slug]))
+                return HttpResponseRedirect(reverse("detail", args=[listing.slug]))
         context["comment_form"] = comment_form
         context["form"] = form
         return render(request, "auctions/detail.html", context)
