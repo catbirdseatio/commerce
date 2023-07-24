@@ -4,7 +4,7 @@ from django.template.defaultfilters import slugify
 import factory
 import factory.fuzzy
 
-from auctions.models import Category, Listing, Bid
+from auctions.models import Category, Listing, Bid, Comment
 
 
 User = get_user_model()
@@ -48,3 +48,12 @@ class BidFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = Bid
+
+
+class CommentFactory(factory.django.DjangoModelFactory):
+    user = factory.SubFactory(UserFactory)
+    listing = factory.SubFactory(ListingFactory)
+    content = factory.fuzzy.FuzzyText(length=1000)
+
+    class Meta:
+        model = Comment

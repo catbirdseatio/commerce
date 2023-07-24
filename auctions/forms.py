@@ -3,7 +3,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.contrib.auth import get_user_model
 
-from auctions.models import Listing, Bid
+from auctions.models import Listing, Bid, Comment
 
 
 User = get_user_model()
@@ -70,6 +70,35 @@ class BidForm(forms.ModelForm):
             raise forms.ValidationError(
                 "Bid must be greater than or equal to starting bid."
             )
+
+        return data
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        instance.user = self.user
+        instance.listing = self.listing
+
+        if commit:
+            instance.save()
+        return instance
+
+
+class CommentForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        """Add user and listing to the form instance."""
+        self.listing = kwargs.pop("listing")
+        self.user = kwargs.pop("user")
+
+        super().__init__(*args, **kwargs)
+
+    class Meta:
+        model = Comment
+        fields = ("content",)
+
+    def clean_content(self):
+        data = self.cleaned_data.get("content")
+        if len(data) > 1000:
+            raise forms.ValidationError("Content exceeds 1000 characters.")
 
         return data
 
