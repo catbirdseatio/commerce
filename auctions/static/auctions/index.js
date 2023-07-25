@@ -94,6 +94,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const watchlistLinkBadge = document.querySelector("#watchlist-link > .badge");
   const main = document.querySelector("main");
 
+  /** Event handlers */
   const watchlistButtonClickHandler = (event) => {
     const element = event.target;
     const action = element.dataset.action;
@@ -108,6 +109,7 @@ window.addEventListener("DOMContentLoaded", () => {
       : messageUIAction(main, message, "danger");
   };
 
+  /** Event listeners */
   if (watchlistButton)
     watchlistButton.addEventListener("click", watchlistButtonClickHandler);
 });
