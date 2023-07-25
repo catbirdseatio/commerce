@@ -36,13 +36,13 @@ class WatchlistAPIView(LoginRequiredMixin, View):
         listing = get_object_or_404(Listing, pk=pk)
         user = request.user
         listing.watchlist.add(user)
-        return JsonResponse({"message": "Item added to watchlist!"})
+        return JsonResponse({"message": "Item added to watchlist!", "tags": "info"})
 
     def delete(self, request, pk):
         listing = get_object_or_404(Listing, pk=pk)
         user = request.user
         listing.watchlist.remove(user)
-        return JsonResponse({"message": "Item removed from watchlist!"})
+        return JsonResponse({"message": "Item removed from watchlist!", "tags": "danger"})
 
 
 class CreateListingView(LoginRequiredMixin, View):

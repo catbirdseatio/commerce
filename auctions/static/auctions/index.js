@@ -33,8 +33,7 @@ const apiCall = async (element, pk, main) => {
   return fetch(baseURL, requestParams)
     .then((response) => response.json()) 
       .then((data) => {
-          tags = isAdd ? "info" : "danger"
-          messageUIAction(main, data.message, tags)
+          messageUIAction(main, data.message, data.tags)
       }).catch((err) => {
           console.log(err);
       }) 

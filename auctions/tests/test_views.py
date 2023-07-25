@@ -179,7 +179,7 @@ class TestWatchlistAPIView:
         response = client.post(self.url(test_listing.pk), {})
         assert response.status_code == 200
         assert (
-            bytes(json.dumps({"message": "Item added to watchlist!"}), encoding="UTF-8")
+            bytes(json.dumps({"message": "Item added to watchlist!", "tags": "info"}), encoding="UTF-8")
             in response.content
         )
 
@@ -195,7 +195,7 @@ class TestWatchlistAPIView:
         assert response.status_code == 200
         assert (
             bytes(
-                json.dumps({"message": "Item removed from watchlist!"}),
+                json.dumps({"message": "Item removed from watchlist!", "tags": "danger"}),
                 encoding="UTF-8",
             )
             in response.content
