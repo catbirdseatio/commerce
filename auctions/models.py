@@ -84,7 +84,7 @@ class Listing(models.Model):
 
     # Many To Many Fields
     watchlist = models.ManyToManyField(
-        "User", related_name="watchlist", blank=True, null=True
+        "User", related_name="watchlist", blank=True, null=True, editable=False
     )
 
     # Managers
