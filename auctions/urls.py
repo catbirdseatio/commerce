@@ -8,6 +8,7 @@ urlpatterns = [
     path("register", views.RegisterView.as_view(), name="register"),
     path("create", views.CreateListingView.as_view(), name="create"),
     path("watchlist", views.WatchlistView.as_view(), name="watchlist"),
+    path("watchlist/<pk>", views.WatchlistAPIView.as_view(), name="watchlist_api"),
     path("category/<slug:slug>", views.CategoryListView.as_view(), name="category"),
     path("<slug:slug>", views.DetailListingView.as_view(), name="detail"),
     path("", views.IndexView.as_view(), name="index"),

@@ -91,7 +91,7 @@ window.addEventListener("DOMContentLoaded", () => {
     buttonUIAction(element);
     action === "add"
       ? messageUIAction(main, "Item added to watchlist!")
-      : messageUIAction(main, "Item removed watchlist!", "danger");
+      : messageUIAction(main, "Item removed from watchlist!", "danger");
   };
 
   if (watchlistButton)

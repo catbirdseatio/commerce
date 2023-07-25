@@ -1,6 +1,7 @@
 import decimal
 import random
 import string
+import json
 import pytest
 from django.urls import reverse
 from django.contrib.auth import get_user_model
@@ -169,16 +170,41 @@ class TestWatchlistView:
         assert len(response.context["listings"]) == 6
 
 
-# class TestWatchlistAPIView:
-#     def url(self, pk):
-#         return reverse("watchlist_api", args=[pk])
+class TestWatchlistAPIView:
+    def url(self, pk):
+        return reverse("watchlist_api", args=[pk])
+    
+    def test_watchlist_user_can_post(self, test_listing, test_user, client):
+        client.force_login(test_user)
+        response = client.post(self.url(test_listing.pk),{})
+        assert response.status_code == 200
+        assert bytes(json.dumps({"message": "Item added to watchlist!"}), encoding="UTF-8") in response.content
 
-#     def test_user_can_watch(self, client, test_user, test_listing):
-#         url = self.url(test_listing.pk)
-#         # client.force_login(test_user)
-#         # response = client.post(url, {})
-#         # print(response.content)
-#         assert True
+    def test_watchlist_user_added_to_watchlist(self, client, test_user, test_listing):
+        url = self.url(test_listing.pk)
+        client.force_login(test_user)
+        response = client.post(url, {})
+        assert test_user in test_listing.watchlist.all()
+    
+    def test_watchlist_user_can_delete(self, test_listing, test_user, client):
+        client.force_login(test_user)
+        response = client.delete(self.url(test_listing.pk),{})
+        assert response.status_code == 200
+        assert bytes(json.dumps({"message": "Item removed from watchlist!"}), encoding="UTF-8")in response.content
+
+    
+    def test_watchlist_user_removed_from_watchlist(self, client, test_user, test_listing):
+        url = self.url(test_listing.pk)
+        client.force_login(test_user)
+        response = client.delete(url, {})
+        assert test_user not in test_listing.watchlist.all()
+        assert test_listing.watchlist.count() == 0
+    
+    def test_watchlist_user_removed_from_watchlist_failure(self, client, test_user, test_listing):
+        url = self.url(1000000000000000)
+        client.force_login(test_user)
+        response = client.delete(url, {})
+        assert response.status_code == 404
 
 
 class TestCreateView:
