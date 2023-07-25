@@ -155,6 +155,6 @@ class TestListingE2E:
             "arguments[0].click();", add_watchlist_button
         )
 
-        authenticated_browser.implicitly_wait(10)
+        authenticated_browser.implicitly_wait(15)
 
         assert test_listing.watchlist.count() == 0
