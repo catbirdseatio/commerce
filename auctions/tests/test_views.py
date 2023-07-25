@@ -173,34 +173,46 @@ class TestWatchlistView:
 class TestWatchlistAPIView:
     def url(self, pk):
         return reverse("watchlist_api", args=[pk])
-    
+
     def test_watchlist_user_can_post(self, test_listing, test_user, client):
         client.force_login(test_user)
-        response = client.post(self.url(test_listing.pk),{})
+        response = client.post(self.url(test_listing.pk), {})
         assert response.status_code == 200
-        assert bytes(json.dumps({"message": "Item added to watchlist!"}), encoding="UTF-8") in response.content
+        assert (
+            bytes(json.dumps({"message": "Item added to watchlist!"}), encoding="UTF-8")
+            in response.content
+        )
 
     def test_watchlist_user_added_to_watchlist(self, client, test_user, test_listing):
         url = self.url(test_listing.pk)
         client.force_login(test_user)
         response = client.post(url, {})
         assert test_user in test_listing.watchlist.all()
-    
+
     def test_watchlist_user_can_delete(self, test_listing, test_user, client):
         client.force_login(test_user)
-        response = client.delete(self.url(test_listing.pk),{})
+        response = client.delete(self.url(test_listing.pk), {})
         assert response.status_code == 200
-        assert bytes(json.dumps({"message": "Item removed from watchlist!"}), encoding="UTF-8")in response.content
+        assert (
+            bytes(
+                json.dumps({"message": "Item removed from watchlist!"}),
+                encoding="UTF-8",
+            )
+            in response.content
+        )
 
-    
-    def test_watchlist_user_removed_from_watchlist(self, client, test_user, test_listing):
+    def test_watchlist_user_removed_from_watchlist(
+        self, client, test_user, test_listing
+    ):
         url = self.url(test_listing.pk)
         client.force_login(test_user)
         response = client.delete(url, {})
         assert test_user not in test_listing.watchlist.all()
         assert test_listing.watchlist.count() == 0
-    
-    def test_watchlist_user_removed_from_watchlist_failure(self, client, test_user, test_listing):
+
+    def test_watchlist_user_removed_from_watchlist_failure(
+        self, client, test_user, test_listing
+    ):
         url = self.url(1000000000000000)
         client.force_login(test_user)
         response = client.delete(url, {})
@@ -262,14 +274,13 @@ class TestCreateView:
             data={
                 "title": "Post Listing",
                 "description": "A LISTING",
-                "starting_bid": .01,
+                "starting_bid": 0.01,
             },
             follow=True,
         )
         assert b"The listing was successfully created." not in response.content
         assert Listing.objects.filter(title="Post Listing").count() == 0
 
-    
     def test_anonymous_user_cannot_get(self, client):
         response = client.get(self.url, follow_redirects=True)
         assert response.status_code == 302
@@ -283,7 +294,7 @@ class TestDetailView:
     def test_template_used(self, client, test_listing):
         response = client.get(test_listing.get_absolute_url())
         assertTemplateUsed(response, "auctions/detail.html")
-        
+
     def test_form_not_in_template_unauthenticated_user(self, client, test_listing):
         response = client.get(test_listing.get_absolute_url())
         assertContains(response, '<p class="mb-5">Log in to leave a comment.</p>')
@@ -334,7 +345,7 @@ class TestDetailView:
         response = client.post(
             testing_bid.listing.get_absolute_url(),
             data={"bid_price": bid_price, "form": True},
-            follow_redirect=True,
+            follow=True,
         )
         assert b"You are the high bidder!" in response.content
         assert test_listing.current_price == bid_price
@@ -367,7 +378,7 @@ class TestDetailView:
         response = client.post(
             test_listing.get_absolute_url(),
             data={"content": "Hello There", "comment_form": True},
-            follow=True
+            follow=True,
         )
         assert b"Your comment has been added!" in response.content
 
@@ -378,7 +389,6 @@ class TestDetailView:
         )
         assert response.status_code == 302
 
-    
     def test_add_comment_fail_too_long(self, client, test_user, test_listing):
         content = "".join(
             random.choices(string.ascii_uppercase + string.digits, k=1001)
@@ -413,7 +423,7 @@ class TestCategoryListView:
     def test_get_category_view_context(self, client, test_listing):
         category = test_listing.category
         url = category.get_absolute_url()
-        
+
         response = client.get(url)
         assert response.context["category"] == category.title
         assert len(response.context["listings"]) == 1

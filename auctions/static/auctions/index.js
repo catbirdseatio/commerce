@@ -14,17 +14,30 @@ const getCookie = (name) => {
   return cookieValue;
 };
 
-const apiCall = (element) => {
-  /** Make an API call with the native fetch API. */
+const apiCall = async (element, pk, main) => {
+  /** Make an API call with the native fetch API. 
+   * 
+   * element: the button ui element
+   * pk: primary key of listing.
+   * main: the <main> tag. The message returned from API is prepended to main.
+  */
+  const baseURL = `watchlist/${pk}`
   const csrfToken = getCookie("csrftoken");
   const isAdd = element.dataset.action == "add" ? true : false;
   const method = isAdd ? "POST" : "DELETE";
-  requestParams = {
+  const requestParams = {
     method,
     headers: { "X-CSRFToken": csrfToken },
     mode: "same-origin",
   };
-  console.log(requestParams);
+  return fetch(baseURL, requestParams)
+    .then((response) => response.json()) 
+      .then((data) => {
+          tags = isAdd ? "info" : "danger"
+          messageUIAction(main, data.message, tags)
+      }).catch((err) => {
+          console.log(err);
+      }) 
 };
 
 const buttonUIAction = (element) => {
@@ -85,13 +98,15 @@ window.addEventListener("DOMContentLoaded", () => {
   const watchlistButtonClickHandler = (event) => {
     const element = event.target;
     const action = element.dataset.action;
-    /** TODO API CALLS */
-    apiCall(element);
+    const pk = element.dataset.pk;
+    let message;
+
+    apiCall(element, pk, main)
     badgeUIAction(watchlistLinkBadge, action);
     buttonUIAction(element);
     action === "add"
-      ? messageUIAction(main, "Item added to watchlist!")
-      : messageUIAction(main, "Item removed from watchlist!", "danger");
+      ? messageUIAction(main, message)
+      : messageUIAction(main, message, "danger");
   };
 
   if (watchlistButton)

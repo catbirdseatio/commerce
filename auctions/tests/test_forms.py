@@ -35,7 +35,7 @@ class TestCommentForm:
         instance = form.save()
         assert test_listing.comments.count() == 1
         assert int(instance.pk)
-    
+
     def test_save_no_commit(self, test_user, test_listing):
         content = "".join(
             random.choices(string.ascii_lowercase + string.digits, k=1000)
