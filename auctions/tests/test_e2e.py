@@ -1,8 +1,6 @@
 from django.urls import reverse
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.select import Select
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 
 
 class TestCreateListingE2E:
@@ -134,6 +132,7 @@ class TestListingE2E:
         authenticated_browser.execute_script(
             "arguments[0].click();", add_watchlist_button
         )
+        authenticated_browser.implicitly_wait(10)
 
         assert str(watchlist_badge_value - 1) == watchlist_badge.text
         assert "Item removed from watchlist!" in authenticated_browser.page_source
