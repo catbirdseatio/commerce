@@ -121,7 +121,7 @@ class DetailListingView(View):
             listing.is_active = False
             listing.save()
             if listing.number_of_bids == 0:
-                winner = "nobody"
+                winner = "Nobody"
             else:
                 winner = listing.high_bid.user.username
 

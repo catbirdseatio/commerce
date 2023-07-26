@@ -449,7 +449,7 @@ class TestDetailView:
                     {
                         "message": "The listing has been closed.",
                         "tags": "info",
-                        "winner": "nobody",
+                        "winner": "Nobody",
                     }
                 ),
                 encoding="UTF-8",
