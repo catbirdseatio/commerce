@@ -420,13 +420,38 @@ class TestDetailView:
     def test_seller_put_success(self, client, test_user):
         listing = ListingFactory(seller=test_user)
         BidFactory(listing=listing)
-        
+
         client.force_login(test_user)
         response = client.patch(listing.get_absolute_url(), {})
         assert (
             bytes(
-                json.dumps({"message": "The listing has been closed.", "tags": "info",
-                            "winner": listing.high_bid.user.username }),
+                json.dumps(
+                    {
+                        "message": "The listing has been closed.",
+                        "tags": "info",
+                        "winner": listing.high_bid.user.username,
+                    }
+                ),
+                encoding="UTF-8",
+            )
+            in response.content
+        )
+        assert not Listing.objects.get(pk=listing.pk).is_active
+
+    def test_seller_put_success_no_bids(self, client, test_user):
+        listing = ListingFactory(seller=test_user)
+
+        client.force_login(test_user)
+        response = client.patch(listing.get_absolute_url(), {})
+        assert (
+            bytes(
+                json.dumps(
+                    {
+                        "message": "The listing has been closed.",
+                        "tags": "info",
+                        "winner": "nobody",
+                    }
+                ),
                 encoding="UTF-8",
             )
             in response.content

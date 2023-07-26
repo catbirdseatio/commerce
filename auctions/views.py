@@ -119,9 +119,14 @@ class DetailListingView(View):
         else:
             listing.is_active = False
             listing.save()
+            if listing.number_of_bids == 0:
+                winner = "nobody"
+            else:
+                winner = listing.high_bid.user.username
+
             return JsonResponse({"message": "The listing has been closed.",
                                  "tags": "info",
-                                 "winner": listing.high_bid.user.username})
+                                 "winner": winner})
 
 
 class CategoryListView(View):
