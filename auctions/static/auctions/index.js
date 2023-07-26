@@ -56,7 +56,9 @@ const closeButtonAPICall = async (element, slug, main) => {
     mode: "same-origin",
   };
   return fetch(baseURL, requestParams)
-    .then((response) => response.json()) 
+    .then((response) => {
+      console.log(response);
+      return response.json()}) 
       .then((data) => {
         console.log(data);
           messageUIAction(main, data.message, data.tags);

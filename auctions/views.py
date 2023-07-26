@@ -127,7 +127,7 @@ class DetailListingView(View):
 class CategoryListView(View):
     def get(self, request, slug):
         category = Category.objects.get(slug=slug)
-        listings = category.listings.all()
+        listings = Listing.objects.get_active().filter(category=category)
 
         return render(
             request,

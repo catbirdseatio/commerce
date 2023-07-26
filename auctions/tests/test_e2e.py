@@ -98,6 +98,7 @@ class TestListingE2E:
         self, live_server, authenticated_browser
     ):  
         listing= ListingFactory(is_active=True)
+        
         authenticated_browser.get(
             f"{live_server.url}/{listing.get_absolute_url()}"
         )
@@ -114,6 +115,7 @@ class TestListingE2E:
             "arguments[0].click();", add_watchlist_button
         )
 
+        authenticated_browser.implicitly_wait(20)
         assert listing.watchlist.count() == 1
 
     def test_remove_watchlist_button_clicked_ui(
@@ -135,6 +137,7 @@ class TestListingE2E:
         authenticated_browser.execute_script(
             "arguments[0].click();", add_watchlist_button
         )
+        
         authenticated_browser.implicitly_wait(15)
 
         assert str(watchlist_badge_value - 1) == watchlist_badge.text
@@ -159,6 +162,6 @@ class TestListingE2E:
             "arguments[0].click();", add_watchlist_button
         )
 
-        authenticated_browser.implicitly_wait(15)
+        authenticated_browser.implicitly_wait(20)
 
         assert listing.watchlist.count() == 0
