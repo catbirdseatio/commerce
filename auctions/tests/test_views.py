@@ -473,6 +473,19 @@ class TestDetailView:
         assert test_listing.is_active
 
 
+class TestCategoriesView:
+    url = reverse("categories")
+    
+    def test_get_success(self, client, test_categories):
+        response = client.get(self.url)
+        assert response.status_code == 200
+
+    def test_template_used(self, client, test_categories):
+        url = self.url
+        response = client.get(self.url)
+        assertTemplateUsed(response, "auctions/categories.html")
+
+
 class TestCategoryListView:
     def test_get_success(self, client, test_listing):
         category = test_listing.category

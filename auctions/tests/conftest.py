@@ -44,6 +44,10 @@ def test_user():
 def test_category():
     return CategoryFactory()
 
+@pytest.fixture
+def test_categories():
+    return [CategoryFactory() for _ in range(5)]
+
 
 @pytest.fixture
 def test_listing():

@@ -16,10 +16,10 @@
             {% endif %}
         </div>
         <div class="col-xs-12 col-sm-6 col-lg-8">
-            <div class="card h-100 bg-info">
+            <div class="card h-100 bg-info text-white bg-dark my-3">
                 <div class="card-header text-center">{{ listing.title }}</div>
                 <div class="card-body bg-light">
-                    <div class="card-text bg-light">
+                    <div class="card-text bg-light text-dark">
                         {{ listing.description|linebreaks }}
                         <p><strong>Current Price: ${{ listing.current_price }}</strong></p>
                         <p><strong>Seller:</strong> {{ listing.seller }}</p>

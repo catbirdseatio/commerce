@@ -146,6 +146,11 @@ class CategoryListView(View):
         )
 
 
+class CategoriesView(View):
+    def get(self, request):
+        return render(request, "auctions/categories.html")
+
+
 class LoginView(View):
     form_class = LoginForm
 

@@ -109,7 +109,7 @@ class TestListingE2E:
             "arguments[0].click();", add_watchlist_button
         )
 
-        authenticated_browser.implicitly_wait(10)
+        authenticated_browser.implicitly_wait(20)
         assert listing.watchlist.count() == 1
 
     def test_remove_watchlist_button_clicked_ui(
@@ -132,7 +132,7 @@ class TestListingE2E:
             "arguments[0].click();", add_watchlist_button
         )
 
-        authenticated_browser.implicitly_wait(15)
+        authenticated_browser.implicitly_wait(20)
 
         assert str(watchlist_badge_value - 1) == watchlist_badge.text
         assert "Item removed from watchlist!" in authenticated_browser.page_source

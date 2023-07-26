@@ -1,0 +1,13 @@
+<div class="card text-white bg-dark my-3">
+    <div class="card-footer text-center">
+        Categories
+    </div>
+    <ul class="list-group list-group-flush">
+      {% for category in categories %}
+          <li class="list-group-item">
+            <a class="card-link" href="{{ category.get_absolute_url }}">{{ category.title }}</a></li>
+          {% empty %}
+          <li class="list-group-item">There are no categories.</li>
+          {% endfor %}
+    </ul>
+  </div>

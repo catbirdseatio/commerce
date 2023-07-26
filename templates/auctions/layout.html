@@ -1,5 +1,5 @@
 {% load static %}
-{% load category_tag %}
+{% load category_tags %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -24,6 +24,9 @@
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'index' %}">Active Listings</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'categories' %}">Categories</a>
+            </li>
             {% if user.is_authenticated %}
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
@@ -42,9 +45,6 @@
                     <a class="nav-link" href="{% url 'register' %}">Register</a>
                 </li>
             {% endif %}
-            <li>
-                {% show_categories %}
-            </li>
         </ul>
         <hr class="shadow-lg">
         </header>
