@@ -6,43 +6,49 @@
     {% else %}
         <img class="card-img-top" src="{% static 'auctions/default.png' %}" alt="Card image cap">
     {% endif %}
-    <div class="card-body">
-        <h5 class="card-title text-center">Bid</h5>
-        <div class="m-0">
-                {% with listing.high_bid as bid %}
-                    {% if bid %}
-                        {% with listing.number_of_bids as bids %}
-                        <p>There {{ bids|pluralize:"is,are" }} {{ bids }} bid{{ bids|pluralize}}.</p>
-                        {% endwith %}
-                        {% if bid.user == user %}
-                            <p>You are the high bidder.</p>
+    <div class="bid-card-body">
+        <div class="card-body">
+            <h5 class="card-title text-center">Bid</h5>
+            <div class="m-0">
+                    {% with listing.high_bid as bid %}
+                        {% if bid %}
+                            {% with listing.number_of_bids as bids %}
+                            <p>There {{ bids|pluralize:"is,are" }} {{ bids }} bid{{ bids|pluralize}}.</p>
+                            {% endwith %}
+                            {% if bid.user == user %}
+                                <p>You are the high bidder.</p>
+                            {% else %}
+                                <p>{{ bid.user }} is the high bidder.</p>
+                            {% endif %}
                         {% else %}
-                            <p>{{ bid.user }} is the high bidder.</p>
+                            <p>There are no bids.</p>
                         {% endif %}
-                    {% else %}
-                        <p>There are no bids.</p>
-                    {% endif %}
-                {% endwith %}
-        </div>
-    </div>
-    <div class="card-body">
-        {% if user.is_authenticated %}
-            <form method="post">
-                {% csrf_token %}
-                {{ form|crispy}}
-                <div class="d-grid mb-2">
-                    <button type="submit" class="btn btn-primary btn-block">Place Bid</button>
-                </div>
-            </form>
-            <div class="d-grid">
-                {% if listing in request.user.watchlist.all %}
-                <button class="btn btn-primary btn-block" data-action="remove" data-pk="{{ listing.pk }}" id="watchlist-button">Remove from Watchlist</button>
-                {% else %}
-                <button class="btn btn-warning btn-block" data-action="add" data-pk="{{ listing.pk }}" id="watchlist-button">Add to Watchlist</button>
-                {% endif %}
+                    {% endwith %}
             </div>
-        {% else %}
-            <p>Log in to place bid.</p>
-        {% endif %}
+        </div>
+        <div class="card-body">
+            {% if user.is_authenticated %}
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form|crispy}}
+                    <div class="d-grid mb-2">
+                        <button type="submit" class="btn btn-primary btn-block">Place Bid</button>
+                    </div>
+                </form>
+                <div class="d-grid g-2">
+                    {% if listing in user.watchlist.all %}
+                    <button class="btn btn-primary btn-block mb-2" data-action="remove" data-pk="{{ listing.pk }}" id="watchlist-button">Remove from Watchlist</button>
+                    {% else %}
+                    <button class="btn btn-warning btn-block mb-2" data-action="add" data-pk="{{ listing.pk }}" id="watchlist-button">Add to Watchlist</button>
+                    {% endif %}
+                    <!-- Seller may close active listing here -->
+                    {% if user ==  listing.seller %}
+                    <button class="btn btn-danger btn-block" data-action="close" data-slug="{{ listing.slug }}" id="close-button">Close Listing</button>
+                    {% endif %}
+                </div>
+            {% else %}
+                <p>Log in to place bid.</p>
+            {% endif %}
+        </div>
     </div>
 </div>

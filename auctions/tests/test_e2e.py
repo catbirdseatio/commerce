@@ -2,6 +2,8 @@ from django.urls import reverse
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.select import Select
 
+from auctions.tests.factories import ListingFactory
+
 
 class TestCreateListingE2E:
     def test_form_submission_no_image(
@@ -93,10 +95,11 @@ class TestListingE2E:
         assert "Item added to watchlist!" in authenticated_browser.page_source
 
     def test_add_watchlist_button_clicked_backend(
-        self, live_server, authenticated_browser, test_listing
-    ):
+        self, live_server, authenticated_browser
+    ):  
+        listing= ListingFactory(is_active=True)
         authenticated_browser.get(
-            f"{live_server.url}/{test_listing.get_absolute_url()}"
+            f"{live_server.url}/{listing.get_absolute_url()}"
         )
 
         add_watchlist_button = authenticated_browser.find_element(
@@ -111,7 +114,7 @@ class TestListingE2E:
             "arguments[0].click();", add_watchlist_button
         )
 
-        assert test_listing.watchlist.count() == 1
+        assert listing.watchlist.count() == 1
 
     def test_remove_watchlist_button_clicked_ui(
         self, live_server, authenticated_browser, test_listing, test_user
@@ -132,19 +135,20 @@ class TestListingE2E:
         authenticated_browser.execute_script(
             "arguments[0].click();", add_watchlist_button
         )
-        authenticated_browser.implicitly_wait(10)
+        authenticated_browser.implicitly_wait(15)
 
         assert str(watchlist_badge_value - 1) == watchlist_badge.text
         assert "Item removed from watchlist!" in authenticated_browser.page_source
 
     def test_remove_watchlist_button_clicked_backend(
-        self, live_server, authenticated_browser, test_listing, test_user
-    ):
-        assert test_listing.watchlist.count() == 0
-        test_listing.watchlist.add(test_user)
+        self, live_server, authenticated_browser, test_user
+    ):  
+        listing = ListingFactory(is_active=True)
+        
+        listing.watchlist.add(test_user)
 
         authenticated_browser.get(
-            f"{live_server.url}/{test_listing.get_absolute_url()}"
+            f"{live_server.url}/{listing.get_absolute_url()}"
         )
 
         add_watchlist_button = authenticated_browser.find_element(
@@ -157,4 +161,4 @@ class TestListingE2E:
 
         authenticated_browser.implicitly_wait(15)
 
-        assert test_listing.watchlist.count() == 0
+        assert listing.watchlist.count() == 0

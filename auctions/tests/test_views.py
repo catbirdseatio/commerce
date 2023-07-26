@@ -5,7 +5,7 @@ import json
 import pytest
 from django.urls import reverse
 from django.contrib.auth import get_user_model
-from pytest_django.asserts import assertTemplateUsed, assertContains
+from pytest_django.asserts import assertTemplateUsed, assertContains, assertNotContains
 from auctions.models import Listing
 from auctions.tests.factories import ListingFactory, BidFactory
 
@@ -179,7 +179,10 @@ class TestWatchlistAPIView:
         response = client.post(self.url(test_listing.pk), {})
         assert response.status_code == 200
         assert (
-            bytes(json.dumps({"message": "Item added to watchlist!", "tags": "info"}), encoding="UTF-8")
+            bytes(
+                json.dumps({"message": "Item added to watchlist!", "tags": "info"}),
+                encoding="UTF-8",
+            )
             in response.content
         )
 
@@ -195,7 +198,9 @@ class TestWatchlistAPIView:
         assert response.status_code == 200
         assert (
             bytes(
-                json.dumps({"message": "Item removed from watchlist!", "tags": "danger"}),
+                json.dumps(
+                    {"message": "Item removed from watchlist!", "tags": "danger"}
+                ),
                 encoding="UTF-8",
             )
             in response.content
@@ -399,6 +404,48 @@ class TestDetailView:
             data={"content": content, "comment_form": True},
         )
         assert b"Content exceeds 1000 characters." in response.content
+
+    def test_seller_close_button_visible(self, client, test_user):
+        listing = ListingFactory(seller=test_user, is_active=True)
+        client.force_login(test_user)
+        response = client.get(listing.get_absolute_url())
+        assertContains(response, "Close Listing</button>")
+
+    def test_seller_close_button_not_visible(self, client, test_user):
+        listing = ListingFactory(seller=test_user, is_active=False)
+        client.force_login(test_user)
+        response = client.get(listing.get_absolute_url())
+        assertNotContains(response, "Close Listing</button>")
+
+    def test_seller_put_success(self, client, test_user):
+        listing = ListingFactory(seller=test_user)
+        BidFactory(listing=listing)
+        
+        client.force_login(test_user)
+        response = client.patch(listing.get_absolute_url(), {})
+        assert (
+            bytes(
+                json.dumps({"message": "The listing has been closed.", "tags": "info",
+                            "winner": listing.high_bid.user.username }),
+                encoding="UTF-8",
+            )
+            in response.content
+        )
+        assert not Listing.objects.get(pk=listing.pk).is_active
+
+    def test_seller_put_failure(self, client, test_user, test_listing):
+        client.force_login(test_user)
+        response = client.patch(test_listing.get_absolute_url(), {})
+        assert (
+            bytes(
+                json.dumps(
+                    {"message": "The action could not be completed.", "tags": "danger"}
+                ),
+                encoding="UTF-8",
+            )
+            in response.content
+        )
+        assert test_listing.is_active
 
 
 class TestCategoryListView:

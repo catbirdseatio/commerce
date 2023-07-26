@@ -107,6 +107,21 @@ class DetailListingView(View):
         context["comment_form"] = comment_form
         context["form"] = form
         return render(request, "auctions/detail.html", context)
+    
+    @method_decorator(login_required)
+    def patch(self, request, slug):
+        """Updates the listing to CLOSE."""
+        listing = get_object_or_404(Listing, slug=slug)
+        
+        if request.user != listing.seller:
+            return JsonResponse({"message": "The action could not be completed.",
+                                 "tags": "danger"})
+        else:
+            listing.is_active = False
+            listing.save()
+            return JsonResponse({"message": "The listing has been closed.",
+                                 "tags": "info",
+                                 "winner": listing.high_bid.user.username})
 
 
 class CategoryListView(View):

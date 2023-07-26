@@ -39,6 +39,33 @@ const apiCall = async (element, pk, main) => {
       }) 
 };
 
+const closeButtonAPICall = async (element, slug, main) => {
+  /** Make an API call to close a listing with the native fetch API. 
+   * 
+   * element: the button ui element
+   * slug: slug of listing.
+   * main: the <main> tag. The message returned from API is prepended to main.
+  */
+  // The close URL is a part of the ListingView, so the baseURL contains the slug
+  const baseURL = `/${slug}`
+  const csrfToken = getCookie("csrftoken");
+  const method = "PATCH";
+  const requestParams = {
+    method,
+    headers: { "X-CSRFToken": csrfToken },
+    mode: "same-origin",
+  };
+  return fetch(baseURL, requestParams)
+    .then((response) => response.json()) 
+      .then((data) => {
+        console.log(data);
+          messageUIAction(main, data.message, data.tags);
+          bidCardBodyUIAction(data);
+      }).catch((err) => {
+          console.log(err);
+      }) 
+};
+
 const buttonUIAction = (element) => {
   /** button UI actions when a button is clicked */
 
@@ -89,8 +116,50 @@ const messageUIAction = (main, message, tags = "info") => {
   main.prepend(container);
 };
 
+const bidCardBodyUIAction = (listing) => {
+  const bidCardBody = document.querySelector(".bid-card-body");
+
+  bidCardBody.innerHTML = "";
+
+  // Create 2 card-body elements and append them to .bid-card-body
+  const cardBody1 = document.createElement("div")
+  const cardBody2 = document.createElement("div")
+  cardBody1.classList.add("card-body")
+  cardBody2.classList.add("card-body")
+  
+
+  const h5 = document.createElement("h5")
+  h5.classList.add("card-title","text-center")
+  h5.innerText = "Bid"
+
+  const divM0 = document.createElement("div")
+  divM0.classList.add("m-0")
+
+  const cardBody1P = document.createElement("p");
+  cardBody1P.innerText = "The auction is over."
+
+  const cardBody1PWinner = document.createElement("p");
+  cardBody1P.innerText = `${ listing.winner } has won the auction.`
+
+  const cardBody2P = document.createElement("p");
+  cardBody2P.innerText = "This auction has ended."
+
+  // Append children
+  divM0.appendChild(cardBody1P)
+  divM0.appendChild(cardBody1PWinner)
+  
+  cardBody1.appendChild(h5);
+  cardBody1.appendChild(divM0)
+
+  cardBody2.appendChild(cardBody2P);
+
+  bidCardBody.appendChild(cardBody1)
+  bidCardBody.appendChild(cardBody2)
+}
+
 window.addEventListener("DOMContentLoaded", () => {
   const watchlistButton = document.querySelector("#watchlist-button");
+  const closeButton = document.querySelector("#close-button");
   const watchlistLinkBadge = document.querySelector("#watchlist-link > .badge");
   const main = document.querySelector("main");
 
@@ -99,17 +168,24 @@ window.addEventListener("DOMContentLoaded", () => {
     const element = event.target;
     const action = element.dataset.action;
     const pk = element.dataset.pk;
-    let message;
 
     apiCall(element, pk, main)
     badgeUIAction(watchlistLinkBadge, action);
     buttonUIAction(element);
-    action === "add"
-      ? messageUIAction(main, message)
-      : messageUIAction(main, message, "danger");
   };
+
+  const closeButtonClickHandler = (event) => {
+    const element = event.target;
+    const slug = element.dataset.slug;
+    closeButtonAPICall(element, slug, main);
+
+  }
 
   /** Event listeners */
   if (watchlistButton)
     watchlistButton.addEventListener("click", watchlistButtonClickHandler);
+
+  if (closeButton)
+    closeButton.addEventListener("click", closeButtonClickHandler);
+
 });
