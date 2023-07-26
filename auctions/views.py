@@ -42,7 +42,9 @@ class WatchlistAPIView(LoginRequiredMixin, View):
         listing = get_object_or_404(Listing, pk=pk)
         user = request.user
         listing.watchlist.remove(user)
-        return JsonResponse({"message": "Item removed from watchlist!", "tags": "danger"})
+        return JsonResponse(
+            {"message": "Item removed from watchlist!", "tags": "danger"}
+        )
 
 
 class CreateListingView(LoginRequiredMixin, View):
@@ -91,9 +93,7 @@ class DetailListingView(View):
         listing = get_object_or_404(Listing, slug=slug)
         context = {"listing": listing}
         form = BidForm(request.POST, listing=listing, user=request.user)
-        comment_form = CommentForm(
-                request.POST, listing=listing, user=request.user
-        )
+        comment_form = CommentForm(request.POST, listing=listing, user=request.user)
         if "form" in request.POST:
             if form.is_valid():
                 form.save()
@@ -107,15 +107,16 @@ class DetailListingView(View):
         context["comment_form"] = comment_form
         context["form"] = form
         return render(request, "auctions/detail.html", context)
-    
+
     @method_decorator(login_required)
     def patch(self, request, slug):
         """Updates the listing to CLOSE."""
         listing = get_object_or_404(Listing, slug=slug)
-        
+
         if request.user != listing.seller:
-            return JsonResponse({"message": "The action could not be completed.",
-                                 "tags": "danger"})
+            return JsonResponse(
+                {"message": "The action could not be completed.", "tags": "danger"}
+            )
         else:
             listing.is_active = False
             listing.save()
@@ -124,9 +125,13 @@ class DetailListingView(View):
             else:
                 winner = listing.high_bid.user.username
 
-            return JsonResponse({"message": "The listing has been closed.",
-                                 "tags": "info",
-                                 "winner": winner})
+            return JsonResponse(
+                {
+                    "message": "The listing has been closed.",
+                    "tags": "info",
+                    "winner": winner,
+                }
+            )
 
 
 class CategoryListView(View):

@@ -49,30 +49,28 @@ class ListingAdmin(admin.ModelAdmin):
         "title",
         "category",
         "current_price",
-        "bid_count",
-        "comment_count",
+        "bids",
+        "comments",
     ]
     ordering = ["slug"]
     list_select_related = ["category", "seller"]
     list_per_page = 10
 
-    def bid_count(self, listing):
+    def bids(self, listing):
         url = (
             reverse("admin:auctions_bid_changelist")
             + "?"
             + urlencode({"listing__id": str(listing.pk)})
         )
+        return format_html('<a href="{}">{}</a>', url, "Bids")
 
-        return format_html('<a href="{}">{}</a>', url, listing.bid_count)
-
-    def comment_count(self, listing):
+    def comments(self, listing):
         url = (
             reverse("admin:auctions_comment_changelist")
             + "?"
             + urlencode({"listing__id": str(listing.pk)})
         )
-
-        return format_html('<a href="{}">{}</a>', url, listing.comment_count)
+        return format_html('<a href="{}">{}</a>', url, "Comments")
 
     def get_queryset(self, request):
         queryset = (
@@ -80,8 +78,6 @@ class ListingAdmin(admin.ModelAdmin):
             .get_queryset(request)
             .prefetch_related("bids")
             .prefetch_related("comments")
-            .annotate(bid_count=Count("bids"))
-            .annotate(comment_count=Count("comments"))
         )
         return queryset
 
