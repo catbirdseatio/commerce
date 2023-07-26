@@ -1,6 +1,6 @@
 [run]
 branch = true
-omit = */tests/*, */migrations/*, */urls.py, commerce/*, manage.py, venv/*
+omit = */tests/*, */migrations/*, */urls.py, */admin.py, commerce/*, manage.py, venv/*
 source = .
 disable_warnings = already-imported
 
