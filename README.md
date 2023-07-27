@@ -3,6 +3,7 @@
 A project that allows users to watch, bid, and if he/she is the seller, the user may close the auction. 
 
 See it live: [commerce.catbirdseat.io](https://commerce.catbirdseat.io)
+Video Demo: [YouTube](https://youtu.be/ej4n2-Lv1-o)
 
 ## .env
 
