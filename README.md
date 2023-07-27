@@ -1,5 +1,9 @@
 # Commerce
 
+A project that allows users to watch, bid, and if he/she is the seller, the user may close the auction. 
+
+See it live: [commerce.catbirdseat.io](https://commerce.catbirdseat.io)
+
 ## .env
 
 This project uses [django-environ](https://django-environ.readthedocs.io/en/latest/), which allows the use of environment variables to set settings. The following settings are expected to be in environment variables or in an .env file:
