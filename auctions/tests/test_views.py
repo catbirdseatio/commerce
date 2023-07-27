@@ -475,7 +475,7 @@ class TestDetailView:
 
 class TestCategoriesView:
     url = reverse("categories")
-    
+
     def test_get_success(self, client, test_categories):
         response = client.get(self.url)
         assert response.status_code == 200

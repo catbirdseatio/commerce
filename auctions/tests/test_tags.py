@@ -3,7 +3,6 @@ import pytest
 from django.template import Template, Context
 
 
-
 pytestmark = pytest.mark.django_db
 
 
@@ -27,7 +26,7 @@ class TestCategoryTags:
 
         assert "There are no categories." in rendered
 
-    def test_categories_card_five_categories_render(self,test_categories):
+    def test_categories_card_five_categories_render(self, test_categories):
         template = Template(
             "{% load category_tags %}{% categories_card %}<h1>Hello</h1>"
         )

@@ -1,5 +1,8 @@
 import pytest
 from io import BytesIO
+import decimal
+import random
+import string
 from PIL import Image as img
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.contrib.auth import get_user_model
@@ -11,6 +14,7 @@ from auctions.tests.factories import (
     ListingFactory,
     BidFactory,
 )
+from auctions.forms import CommentForm, BidForm
 
 
 @pytest.fixture(autouse=True)
@@ -44,13 +48,14 @@ def test_user():
 def test_category():
     return CategoryFactory()
 
+
 @pytest.fixture
 def test_categories():
     return [CategoryFactory() for _ in range(5)]
 
 
 @pytest.fixture
-def test_listing():
+def test_listing(scope="function"):
     return ListingFactory(is_active=True)
 
 
@@ -67,6 +72,37 @@ def imageless_listing():
 @pytest.fixture
 def testing_bid():
     return BidFactory()
+
+
+# Form fixtures
+@pytest.fixture(scope="function")
+def bid_form(test_listing, test_user):
+    bid_price = decimal.Decimal(test_listing.current_price) + decimal.Decimal(".01")
+    data = {"bid_price": bid_price, "form": True}
+
+    return BidForm(data, user=test_user, listing=test_listing)
+
+
+@pytest.fixture(scope="function")
+def invalid_bid_form(test_listing, test_user):
+    bid_price = decimal.Decimal(test_listing.current_price) - decimal.Decimal(".01")
+    data = {"bid_price": bid_price, "form": True}
+
+    return BidForm(data, user=test_user, listing=test_listing)
+
+
+@pytest.fixture(scope="function")
+def comment_form(test_listing, test_user):
+    content = "".join(random.choices(string.ascii_lowercase + string.digits, k=1000))
+    data = {"content": content, "comment_form": True}
+    return CommentForm(data, user=test_user, listing=test_listing)
+
+
+@pytest.fixture(scope="function")
+def invalid_comment_form(test_listing, test_user):
+    content = "".join(random.choices(string.ascii_lowercase + string.digits, k=1001))
+    data = {"content": content, "comment_form": True}
+    return CommentForm(data, user=test_user, listing=test_listing)
 
 
 # Selenium fixtures
