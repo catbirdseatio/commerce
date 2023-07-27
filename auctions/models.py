@@ -89,6 +89,9 @@ class Listing(models.Model):
 
     # Managers
     objects = ListingManager()
+    
+    class Meta:
+        ordering = ["-created_at"]
 
     def img_preview(self):
         if self.profile_image:
